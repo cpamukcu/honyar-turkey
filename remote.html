@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Honyar Remote</title>
+<style>
+:root{--bg:#000;--card:#1C1C1E;--fg:#F5F5F7;--white:#fff;--muted:#86868B;--blue:#0A84FF;--amber:#FF9F0A;--green:#30D158;--red:#FF453A;--line:rgba(255,255,255,.12);--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;--nf:21px;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font)}
+body{display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 16px 0;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+header{display:flex;align-items:center;gap:10px;padding:12px 0 10px;font-size:14px;color:var(--muted)}
+#dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+#dot.ok{background:var(--green)}#dot.wait{background:var(--amber)}#dot.off{background:var(--red)}
+#stat{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#timer{font-variant-numeric:tabular-nums;font-size:17px;font-weight:600;color:var(--white);padding:6px 12px;border-radius:999px;background:var(--card)}
+#timer.run{color:var(--green)}
+#reset{font-size:13px;color:var(--muted);padding:6px 4px}
+#now{padding:6px 0 12px;border-bottom:1px solid var(--line)}
+.kick{margin:0;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+h1{margin:6px 0 4px;font-size:26px;line-height:1.15;font-weight:700;color:var(--white);text-wrap:balance}
+#nxt{margin:0;font-size:15px;color:var(--muted)}
+#notes{flex:1;min-height:0;overflow-y:auto;padding:16px 2px 24px;font-size:var(--nf);line-height:1.5;color:var(--fg);-webkit-overflow-scrolling:touch}
+#tools{display:flex;gap:8px;padding:8px 0}
+#tools button{flex:1;padding:10px 0;border-radius:12px;background:var(--card);font-size:15px;font-weight:600}
+footer{display:grid;grid-template-columns:1fr 2fr;gap:10px;padding:6px 0 calc(12px + env(safe-area-inset-bottom,0px))}
+footer button{height:96px;border-radius:22px;font-size:22px;font-weight:700;background:var(--card);color:var(--white);touch-action:manipulation}
+footer #nextBtn{background:var(--blue)}
+footer button:active{transform:scale(.97);opacity:.85}
+#list,#join{position:fixed;inset:0;z-index:5;background:var(--bg);padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+#list[hidden],#join[hidden]{display:none}
+#list h2,#join h2{margin:0 0 12px;font-size:22px;color:var(--white)}
+#list ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+#list li button{width:100%;text-align:left;display:flex;gap:12px;padding:14px;border-radius:14px;background:var(--card);font-size:16px}
+#list li button span{color:var(--muted);font-variant-numeric:tabular-nums;width:24px;flex:none}
+#list li button.cur{outline:2px solid var(--blue)}
+#closeList{float:right;font-size:16px;color:var(--blue);padding:4px}
+#join p{color:var(--muted);font-size:16px;line-height:1.4}
+#join input{width:100%;font:700 28px/1 var(--font);letter-spacing:.2em;text-transform:uppercase;text-align:center;padding:16px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--white)}
+#join button{width:100%;margin-top:12px;padding:16px;border-radius:16px;background:var(--blue);font-size:18px;font-weight:700;color:var(--white)}
+</style>
+</head>
+<body>
+<header><i id="dot"></i><span id="stat">Connecting&#8230;</span><button id="reset">Reset</button><button id="timer" aria-label="Start or pause the timer">00:00</button></header>
+<section id="now"><p class="kick">Slide <span id="num">1</span> / <span id="tot">1</span></p><h1 id="title"></h1><p id="nxt"></p></section>
+<article id="notes" aria-live="polite"></article>
+<div id="tools"><button id="aminus" aria-label="Smaller text">A&#8722;</button><button id="aplus" aria-label="Bigger text">A+</button><button id="listBtn">All slides</button></div>
+<footer><button id="prevBtn">&#8249; Back</button><button id="nextBtn">Next &#8250;</button></footer>
+<div id="list" hidden><button id="closeList">Close</button><h2>Go to slide</h2><ol id="ol"></ol></div>
+<div id="join" hidden><h2>Connect to the slides</h2><p>On the laptop, press <b>P</b> or click <b>Phone</b> to see the code. Then type it here.</p><form id="jf"><input id="code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="CODE"><button type="submit">Connect</button></form></div>
+<script>const TITLES=["Building Safer Homes, Together", "Today", "04:17", "We remember", "Turkey took it seriously", "Istanbul is next", "Families are changing", "Who picks the brand in a Turkish home?", "The wall switch is a hard market", "Honyar's door: earthquake safety", "What makes Honyar special in Turkey", "Three clear needs in Turkish homes", "Need A: Safe wiring for renewed flats", "Need B: Water-safe kitchens and bathrooms", "Need C: Ready for the next earthquake", "One kit for each need", "Chinese brands are already winning in Turkey", "Grow with Turkey's public builders", "What this means for Honyar", "Where Honyar stands", "Coming in the final presentation", "Let's build them safer, together"];const NOTES=["Hi everyone, I'm Can. Today I will talk about Honyar and Turkey. My title is simple: Building Safer Homes, Together. Look at this new building at night. At first, only one window is lit. Now watch: the windows light up, one by one.", "I have four parts. First, the earthquake and the rebuild in Turkey. Second, Turkish homes and who picks the brand. Third, Honyar's open door. And last, how Honyar can enter Turkey.", "Now, Turkey. 6 February 2023, at 4:17 in the morning. A huge earthquake hit Kahramanmara\u015f, in the south of Turkey. It was dark, and the power went out.", "More than fifty-three thousand people lost their lives in Turkey. Eleven provinces were hit, and about fourteen million people lived in the area. Around two hundred and eighty thousand buildings were destroyed or badly damaged. We remember every one of these lives.", "And Turkey took it seriously. The state built about four hundred and fifty-five thousand new homes and shops in the earthquake region by December 2025. In Istanbul, almost nine hundred and twenty-five thousand homes were renewed in thirteen years, with grants and loans for owners. A new law in 2023 made rebuilding faster, and new homes follow the 2018 earthquake building code. Every one of these new homes needs safe power, light and water.", "And Istanbul is next. Scientists say there is about a forty-seven percent chance of a magnitude seven earthquake near Istanbul in the next thirty years. The fault under the sea has not had a big earthquake since 1766. In April 2025, a six point two earthquake near Istanbul was a clear warning. More than one and a half million older homes still need to be renewed.", "How do Turkish families live? Homes are smaller now, about three people per home, and one in five homes has one person. There are almost ten million people aged sixty-five and over. So homes need to be simple, safe and smart.", "So who picks the brand in a Turkish home? In renewed flats, the builder picks most parts. The electrician or plumber recommends the brand, and buys it at a wholesaler or one of more than fifty thousand hardware shops. Families add safety extras, often online. From my research, a brand wins for three reasons. One, the installer's advice: Schneider, from France, even gives electricians loyalty points. Two, trust in safety: known names and the TSE and CE marks. Three, price and stock at the local wholesaler. So: win the installer, win the home.", "In China, Honyar is famous for switches and sockets. But in Turkey, the wall switch is a hard market. Three big brands already make switches in Turkey. Schneider Electric and Legrand are from France. Viko is a Turkish brand, and it is owned by Panasonic from Japan. Goods made in Turkey or the EU pay no extra duty, but Chinese breakers and cables pay about ten to fifteen percent more. So Honyar needs a different way in.", "Here is the open door: earthquake safety. More than half of fires after big earthquakes are electrical. Honyar already makes three parts of the answer: fire-resistant cable, a smoke sensor with a siren, and smart sensors that send alerts to phones. And I add two new ideas for Turkey: a seismic breaker that cuts the power when strong shaking starts, and a vibration light that turns on by itself and lights the way out. Both build on Honyar's own breakers and emergency lights. Japan already promotes seismic breakers. So Honyar is not another switch. It is an earthearthquake-safe home.", "So what makes Honyar special in Turkey? One brand for the whole flat: power, light, water and smart home. A earthearthquake-safe kit in one package. Smart home that works with Xiaomi and Tuya apps. It is ready for Turkish rules, because Turkey follows EU product rules, and Honyar already builds to EU standards. Forty years of quality. And it is a stable, state-owned partner. Honyar is not one more switch brand. It can be the earthearthquake-safe home brand.", "From my research, I found three clear needs in Turkish homes. A, safe wiring for renewed flats in Istanbul. B, water-safe kitchens and bathrooms in the new homes in Hatay. C, being ready for the next earthquake.", "Need A is safe wiring for renewed flats in Istanbul. Owners want safe breakers and cable in their new flat, but the builder usually picks the brands. Lawyers now tell owners to write the brands into the contract. About two hundred and sixty-four thousand homes are being renewed right now. My idea is a safe wiring pack: safety breakers, fire-resistant low-smoke cable, water pipes and a smoke sensor.", "Need B is water-safe kitchens and bathrooms. In these rooms, water is close to the sockets. A splash can cause an electric shock or a short circuit. About one hundred and fifty-four thousand families in Hatay alone are moving into new homes. Honyar has a splash-proof socket series with a cover, and safety breakers that cut the power in a split second if current leaks. Leak sensors can come from Mi or Tuya partners.", "Need C is the next earthquake. Turkey knows earthquakes well, and families take being ready seriously. When the ground shakes, power fails and fires can start. So the kit has a seismic breaker, a vibration light, a smoke sensor with a siren, and smart alerts. And here is an app idea: a simple Honyar app. When shaking starts, every family phone gets an alert, and one tap sends I'm safe to the family.", "Honyar has four product lines: smart home, electrical, lighting and plumbing. We mix them into one kit for each need. A, the safe wiring pack. B, the water-safe kit. C, the earthearthquake-safe kit. Items marked new are ideas for Turkey, built on Honyar's own lines.", "And Honyar would not be the first. Chinese brands are already winning in Turkey. Xiaomi opened a phone factory in Istanbul in 2021. It can make five million phones a year, and Xiaomi was the number one phone brand in Turkey in late 2020. Haier put eighty-five million euros into two factories in Eski\u015fehir, with one thousand six hundred jobs. It is Haier's biggest production base in Europe. BYD signed a one billion dollar deal for a car plant in Manisa, for one hundred and fifty thousand cars a year, though the start date is now open. And TCL, Oppo and Vivo make phones in Turkey with local partners. The pattern is clear: make it in Turkey with a local partner, then sell in Turkey and to Europe. Honyar can follow the same path.", "How can Honyar enter? Grow with Turkey's public builders. TOK\u0130 built most of the new homes, cities run renewal projects, and AFAD leads disaster readiness. Honyar is part of a state-owned group, so it can be a steady public partner. It already works on smart public rental housing in China, and on public buildings abroad. If Honyar makes its products in Turkey with a local partner, they get a price edge in public tenders. The first step is a pilot of the earthearthquake-safe kit in new homes in Hatay.", "So, what does this mean for Honyar? Step one, now: earthearthquake-safe kits with public builders, installers and online. Step two, next: make products in Turkey with a Turkish partner. Just like Xiaomi and Haier: sell first, then make it in Turkey.", "Here is my first SWOT. Strengths: forty years of switches and sockets, four product lines in one brand, and a state-owned parent. Weaknesses: a new name in Turkey, extra duty on Chinese goods, and no local factory or service team yet. Opportunities: the huge rebuild, Istanbul renewal, families who want earthquake safety, and Turkey as a base for Europe. Threats: strong local makers, installers who trust known names, and other Chinese brands like CHINT.", "For the final presentation, I will answer four questions. Price: where should Honyar's price sit? I will check thirty items online and at five wholesalers, and build a price ladder against Viko, Schneider and Legrand. Brand and promotion: how will installers and families hear about Honyar? I will talk to ten electricians and ten families, and make a twelve-month plan with clear goals. Partners: who sells, installs and later makes it? And the two set questions: will shops take stock on credit, and what mark-up do they add? Early hints say payment is often by post-dated cheque, and the shelf price may be about one point six to two times the maker's price.", "Let me end where I started. At the start, one window was lit. Now look: a family walks into their brand-new home. Every new home needs light, power and water. Let's build them safer, together. Thank you. I'm happy to take your questions."];</script>
+<script src="vendor/mqtt.min.js"></script>
+<script>
+(function(){
+  var N=TITLES.length, cur=0, lastState=0, links=[], room=(location.hash||'').replace('#','').toUpperCase();
+  var $=function(id){return document.getElementById(id);};
+  var BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
+  var nf=21; try{nf=parseInt(localStorage.getItem('honyarNf'),10)||21;}catch(e){}
+  function setNf(v){nf=Math.max(15,Math.min(34,v));document.documentElement.style.setProperty('--nf',nf+'px');try{localStorage.setItem('honyarNf',nf);}catch(e){}}
+  setNf(nf);
+  $('tot').textContent=N;
+
+  function render(){
+    $('num').textContent=cur+1;
+    $('title').textContent=TITLES[cur];
+    $('nxt').textContent=cur<N-1?'Next: '+TITLES[cur+1]:'Last slide';
+    $('notes').textContent=NOTES[cur]||'';
+    $('notes').scrollTop=0;
+    var bs=$('ol').querySelectorAll('button'); for(var i=0;i<bs.length;i++) bs[i].classList.toggle('cur',i===cur);
+  }
+  TITLES.forEach(function(t,i){var li=document.createElement('li'),b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>';b.appendChild(document.createTextNode(t));b.onclick=function(){go(i);$('list').hidden=true;};li.appendChild(b);$('ol').appendChild(li);});
+  render();
+
+  function setStatus(){
+    var up=links.filter(function(c){return c.connected;}).length, live=Date.now()-lastState<40000;
+    $('dot').className=live?'ok':up?'wait':'off';
+    $('stat').textContent=!room?'Not connected':live?'Connected to the slides':up?'Waiting for the laptop ('+room+')':'Offline: notes only';
+  }
+  function send(a,n){
+    var msg=JSON.stringify({a:a,n:n,id:Math.random().toString(36).slice(2)+Date.now()});
+    links.forEach(function(c){if(c.connected)c.publish('honyar-deck/v1/'+room+'/cmd',msg);});
+  }
+  function buzz(){try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
+  function go(i){i=Math.max(0,Math.min(N-1,i));cur=i;render();send('go',i);buzz();startTimer();}
+  $('nextBtn').onclick=function(){if(cur<N-1){cur++;render();} send('next');buzz();startTimer();};
+  $('prevBtn').onclick=function(){if(cur>0){cur--;render();} send('prev');buzz();};
+  $('aplus').onclick=function(){setNf(nf+2);};
+  $('aminus').onclick=function(){setNf(nf-2);};
+  $('listBtn').onclick=function(){$('list').hidden=false;var c=$('ol').querySelector('.cur');if(c)c.scrollIntoView({block:'center'});};
+  $('closeList').onclick=function(){$('list').hidden=true;};
+
+  // Timer: tap to start or pause; it also starts on the first Next.
+  var t0=0, acc=0, running=false;
+  function startTimer(){if(!running){running=true;t0=Date.now();$('timer').classList.add('run');}}
+  $('timer').onclick=function(){if(running){acc+=Date.now()-t0;running=false;$('timer').classList.remove('run');}else startTimer();};
+  $('reset').onclick=function(){acc=0;t0=Date.now();running=false;$('timer').classList.remove('run');tick();};
+  function tick(){var s=Math.floor((acc+(running?Date.now()-t0:0))/1000);$('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+  setInterval(tick,500);
+
+  // Keep the phone screen on while presenting.
+  var lock=null;
+  function wakeLock(){try{if(navigator.wakeLock&&!lock)navigator.wakeLock.request('screen').then(function(l){lock=l;l.addEventListener('release',function(){lock=null;});}).catch(function(){});}catch(e){}}
+  document.addEventListener('click',wakeLock);
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')wakeLock();});
+
+  function connect(){
+    if(!window.mqtt){setStatus();return;}
+    BROKERS.forEach(function(url){
+      try{
+        var c=mqtt.connect(url,{clientId:'phone_'+Math.random().toString(16).slice(2,10),reconnectPeriod:3000,connectTimeout:8000,keepalive:30});
+        c.on('connect',function(){c.subscribe('honyar-deck/v1/'+room+'/state');send('hello');setStatus();});
+        c.on('close',setStatus);c.on('error',function(){});
+        c.on('message',function(t,p){try{var m=JSON.parse(p.toString());if(typeof m.n==='number'&&m.t>=lastState){lastState=m.t;if(Date.now()-m.t<40000&&m.n!==cur){cur=m.n;render();}}}catch(e){}setStatus();});
+        links.push(c);
+      }catch(e){}
+    });
+    setInterval(function(){send('ping');setStatus();},15000);
+  }
+  if(/^[A-Z0-9]{6}$/.test(room)) connect(); else $('join').hidden=false;
+  $('jf').onsubmit=function(e){e.preventDefault();var v=$('code').value.trim().toUpperCase();if(/^[A-Z0-9]{6}$/.test(v)){room=v;history.replaceState(null,'','#'+v);$('join').hidden=true;connect();}};
+  setStatus();
+})();
+</script>
+</body>
+</html>

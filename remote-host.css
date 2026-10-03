@@ -1,0 +1,17 @@
+#phoneOv{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-family:var(--font);color:var(--fg)}
+#phoneOv[hidden]{display:none}
+#phoneOv .pcard{position:relative;width:min(420px,calc(100% - 32px));padding:30px 30px 26px;border-radius:28px;text-align:center;background:rgba(28,28,30,.92);border:1px solid rgba(255,255,255,.16)}
+#phoneOv .pk{margin:0;font:700 12px/1 var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+#phoneOv h2{margin:10px 0 18px;font:700 24px/1.2 var(--font);color:var(--white)}
+#phoneOv .pqr{width:232px;height:232px;margin:0 auto;padding:10px;border-radius:18px;background:#fff}
+#phoneOv .pqr svg{width:100%;height:100%;display:block}
+#phoneOv .pcode{margin:16px 0 4px;font:500 16px/1.3 var(--font);color:var(--muted)}
+#phoneOv .pcode b{font-size:22px;letter-spacing:.18em;color:var(--white)}
+#phoneOv .purl{margin:0;font:400 12px/1.4 var(--font);color:var(--muted);word-break:break-all;user-select:all}
+#phoneOv .pstat{display:flex;justify-content:center;align-items:center;gap:8px;margin:16px 0 0;font:500 14px/1 var(--font)}
+#phoneOv .pstat i{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+#phoneOv .pstat.ok i{background:#30D158}
+#phoneOv .pstat.wait i{background:var(--amber)}
+#phoneOv .pstat.off i{background:#FF453A}
+#phoneOv .px{all:unset;cursor:pointer;position:absolute;top:12px;right:16px;font-size:26px;line-height:1;color:var(--muted)}
+#bar #phoneBtn.on{color:#30D158}
