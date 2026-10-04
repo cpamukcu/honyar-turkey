@@ -12,7 +12,9 @@
   }
   var BASE = 'honyar-deck/v1/' + room + '/';
   var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
-  var remoteURL = new URL('remote.html', location.href).href.split('#')[0] + '#' + room;
+  // From the offline copy (file://) the phone cannot open a local file, so use the live remote page.
+  var remoteURL = (location.protocol === 'file:' ? 'https://cpamukcu.github.io/honyar-turkey/remote.html'
+    : new URL('remote.html', location.href).href.split('#')[0]) + '#' + room;
   var clients = [], seen = {}, lastPhone = 0;
 
   function publishState() {
