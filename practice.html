@@ -92,6 +92,13 @@ td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2c2c2e;border:1px solid var(--line);padding:12px 18px;border-radius:14px;font-size:15px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .toast[hidden]{display:none}
 .banner{background:rgba(255,159,10,.12);border:1px solid rgba(255,159,10,.4);color:#ffd08a;padding:10px 14px;border-radius:14px;font-size:14px;margin-top:14px}
+
+.scr{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;margin-bottom:14px;align-items:start}
+.scr img{width:100%;border-radius:12px;display:block}
+.scr .k{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.scr p{font-size:var(--scr,19px);line-height:1.6;margin:8px 0 12px;color:var(--fg)}
+.cues .script{font-size:17px;line-height:1.55}
+@media (max-width:700px){.scr{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 @media (max-width:900px){.run{grid-template-columns:1fr}}
 </style>
@@ -113,6 +120,7 @@ td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
   <p class="sub">Talk out loud like it's the real thing. I listen, time you, and tell you exactly what to fix. Target: <b>6–7½ minutes</b>, calm pace, every key point.</p>
   <div id="micBanner" class="banner" hidden></div>
   <div class="grid">
+    <button class="card mode" data-mode="script"><span class="k">Start here</span><span class="t">Read the script</span><span class="d">The full talk in your own words, slide by slide. Read it out loud, or press Listen.</span></button>
     <button class="card mode" data-mode="full"><span class="k">Mode 1</span><span class="t">Full run</span><span class="d">The whole talk, slide by slide, with your cues on screen. Scored out of 100.</span></button>
     <button class="card mode" data-mode="drill"><span class="k">Mode 2</span><span class="t">Slide drill</span><span class="d">Repeat one slide until it's smooth. Starts with your weakest slide.</span></button>
     <button class="card mode" data-mode="qa"><span class="k">Mode 3</span><span class="t">Professor Q&amp;A</span><span class="d">Random questions, 45 seconds to answer, then a model answer.</span></button>
@@ -133,6 +141,14 @@ td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
   </ul><p class="hint">Your practice history is saved in this browser only.</p></div></div>
 </section>
 
+<!-- SCRIPT -->
+<section id="script" hidden>
+  <h1>Your full script</h1>
+  <p class="sub">Read it out loud, slowly, two or three times. Then switch to cues in a Full run. Total: about 6½ minutes.</p>
+  <div class="row" style="gap:10px;margin:0 0 14px"><button class="btn ghost" id="scrSmaller">A&#8722;</button><button class="btn ghost" id="scrBigger">A+</button><button class="btn ghost" id="scrHome">Home</button></div>
+  <div id="scrList"></div>
+</section>
+
 <!-- RUN -->
 <section id="run" hidden>
   <h1 id="runTitle"></h1>
@@ -145,7 +161,7 @@ td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
         <div class="meter"><i id="tMeter"></i></div>
         <div class="hint" style="margin-top:8px" id="tTotal"></div>
       </div>
-      <div class="card"><div class="cues" id="cues"></div><div class="hint" id="peekHint" hidden style="margin-top:8px">Hold H (or press the button) to peek. Peeks: <b id="peeks">0</b></div></div>
+      <div class="card"><div class="row" style="margin:0 0 10px;gap:8px"><button class="btn ghost" id="btnTxt" style="padding:7px 12px;font-size:14px">Show full text</button></div><div class="cues" id="cues"></div><div class="hint" id="peekHint" hidden style="margin-top:8px">Hold H (or press the button) to peek. Peeks: <b id="peeks">0</b></div></div>
       <div class="card"><div class="hint">Key points</div><div class="keys" id="keys"></div>
         <div class="check" id="manualChecks" hidden></div></div>
       <div class="card"><div class="micstate"><span class="dot" id="micDot"></span><span id="micTxt">Microphone off</span></div><div class="live" id="live"></div></div>
@@ -198,6 +214,7 @@ td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
 const BASE = "https://cdn.jsdelivr.net/gh/cpamukcu/honyar-turkey@b905e453b8b70f3c5c143d93ea4aa3d2753ce5f6/";
 const TITLES = ["Building Safer Homes, Together", "Today", "04:17", "We remember", "Turkey took it seriously", "Istanbul is next", "Families are changing", "The wall switch is a hard market", "Honyar's door: earthquake safety", "What makes Honyar special in Turkey", "Three needs, three kits", "Chinese brands are already winning in Turkey", "How Honyar enters Turkey", "Let's build them safer, together"];
 const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\"\n\u2022 My project is Honyar in Turkey", "\"I'll go in four steps.\"\n\u2022 First, the earthquake and the rebuild\n\u2022 Second, how Turkish families are changing\n\u2022 Third, why switches won't work, and what will\n\u2022 Lastly, Honyar's marketing plan in Turkey", "\"6 February 2023, 4:17 in the morning.\"\n\u2022 A huge earthquake hit Turkey\n\u2022 And Turkey stood up and started to rebuild", "(Let the video play. Wait for the number.)\n\u2022 More than 53 thousand people lost their lives, in a single day\n\u2022 11 provinces hit, where about 14 million people lived\n\u2022 280 thousand buildings destroyed or badly damaged\n\u2022 (Optional) Personally, some of my relatives were affected", "\"After this earthquake, everything changed in Turkey.\"\n\u2022 Turkey took it very seriously\n\u2022 Around half a million new homes and shops in the region by December 2025, in about three years\n\u2022 Almost 1 million homes renewed in Istanbul in 13 years\n\u2022 New rules to rebuild faster and safer\n\u2022 So safety is now part of every new home in Turkey", "\"Unfortunately, Istanbul is next.\"\n\u2022 47 percent chance of a 7-plus earthquake near Istanbul in the next 30 years\n(Point at the map.)\n\u2022 This orange line is the North Anatolian Fault. Right under Istanbul: no big earthquake since 1766\n\u2022 April 2025: a 6.2 near Istanbul. A serious warning\n\u2022 Around 1.5 million older homes waiting to be renewed", "\"Also, families in Turkey are changing.\"\n\u2022 About three people per home\n\u2022 One in five homes has just one person living in it\n\u2022 Around 10 million people over 65\n\u2022 Homes are getting smaller, and people are getting older\n\u2022 So homes need to be simple, safe and smart\n\u2022 Like getting an alert when something is wrong at your grandmother's home", "\"As we all know, Honyar is famous in China for switches and sockets.\"\n\u2022 But in Turkey, that's a very hard market to get into\n\u2022 Three big brands already make them in Turkey\n\u2022 Schneider Electric and Legrand (luh-GRAHN), from France: own factories, sell in Turkey and to Europe\n\u2022 Viko: a Turkish brand owned by Panasonic from Japan, also has a factory\n\u2022 Plus customs duty: Chinese cables and breakers pay 10 to 15 percent extra\n\u2022 So Honyar needs a different way in", "\"So what is Honyar's door? Earthquake safety.\"\n\u2022 More than half of fires after big earthquakes are electrical\n\u2022 Honyar already makes fire-resistant cables, smoke sensors with sirens, and phone alerts\n\u2022 Two new ideas. First, a seismic breaker: it cuts the power when strong shaking starts\n\u2022 Second, a vibration light: the earthquake starts, the light turns on, you get out easily\n\u2022 We don't need another switch brand. We need an earthquake-safe home brand", "\"So what makes Honyar special in Turkey?\"\n\u2022 One brand for the whole home: power, light, water and smart home, from one supplier\n\u2022 An earthquake-safe kit: breakers, cable, lights and sensors in one package\n\u2022 Smart home ready: works with Xiaomi, which many people in Turkey use\n\u2022 Ready for Turkish rules: Turkey follows the European product rules\n\u2022 40 years of quality, a long history in China\n\u2022 A stable public partner: part of the state-owned CETC group\n\u2022 Not one more switch brand: the earthquake-safe home brand", "\"So, three needs and three kits.\"\n\u2022 A: safe wiring. Safety breakers, fire-resistant cable, pipes, sensors\n\u2022 B: water-safe kitchens and bathrooms. Splash-proof sockets, safety breakers, damp sensor\n\u2022 C, the most important: ready for the next earthquake. Seismic breaker, vibration light", "\"And Chinese brands are already winning in Turkey.\"\n\u2022 Xiaomi makes 5 million phones a year in Istanbul\n\u2022 Haier invested 85 million euros in two factories in Eski\u015fehir: its biggest production base in Europe\n\u2022 BYD signed a 1 billion dollar factory deal in Manisa in 2024 (on hold for now)\n\u2022 TCL makes phones with Ar\u00e7elik, a Turkish company. Oppo and Vivo also make phones in Turkey\n\u2022 The pattern is simple: make it in Turkey with a local partner, sell in Turkey and to Europe\n\u2022 So Honyar can follow the same path", "\"So how does Honyar enter the market? Two steps.\"\n\u2022 Step 1: sell earthquake-safe kits with public builders\n\u2022 TOK\u0130: owned by the Turkish government, builds huge housing projects every year\n\u2022 They choose the brands: the switches, the sockets, everything\n\u2022 Step 2: make it in Turkey with a Turkish partner. No extra import duty\n\u2022 And Turkey is a great base to sell to Europe\n\u2022 Like Xiaomi and Haier: sell first, then build", "\"So, let's build them safer, together.\"\n\u2022 Thank you so much!\n\u2022 Happy to take your questions"];
+const SCRIPT = ["Hello everyone, I'm Can. I'm doing a solo presentation today, and my project is Honyar in Turkey.", "I'll go in four steps. First, the earthquake and the rebuild. Second, how Turkish families are changing. Third, why switches won't work for Honyar, and what will. And lastly, Honyar's marketing plan in Turkey.", "6 February 2023, 4:17 in the morning. A huge earthquake hit Turkey. And Turkey stood up and started to rebuild.", "More than 53 thousand people lost their lives, in a single day. Eleven provinces were hit, where about 14 million people lived. And around 280 thousand buildings were destroyed or badly damaged. Personally, some of my relatives were also affected.", "After this earthquake, everything changed in Turkey. Turkey took it very seriously. Around half a million new homes and shops were built in the region by December 2025, in about three years. In Istanbul, almost 1 million homes were renewed in 13 years. And there are new rules to rebuild faster and safer. So safety is now part of every new home in Turkey.", "Unfortunately, Istanbul is next. Scientists say there is a 47 percent chance of a magnitude 7-plus earthquake near Istanbul in the next 30 years. As you can see, this orange line is the North Anatolian Fault. Right under Istanbul, there has been no big earthquake since 1766. In April 2025, we had a 6.2 near Istanbul, and that was a serious warning. And around 1.5 million older homes are still waiting to be renewed.", "Families in Turkey are also changing. There are about three people per home, and one in five homes has just one person living in it. Around 10 million people are over 65. So homes are getting smaller, and people are getting older. That means homes need to be simple, safe and smart. For example, you want an alert on your phone when something is wrong at your grandmother's home.", "As we all know, Honyar is famous in China for switches and sockets. But in Turkey, that's a very hard market to get into, because three big brands already make them in Turkey. Schneider Electric and Legrand are from France. They have their own factories in Turkey, and they sell in Turkey and to Europe. Viko is a Turkish brand owned by Panasonic from Japan, and it also has a factory. On top of that, Chinese cables and breakers pay 10 to 15 percent extra customs duty. So Honyar needs a different way in.", "So what is Honyar's door? Earthquake safety. More than half of the fires after big earthquakes are electrical. Honyar already makes fire-resistant cables, smoke sensors with sirens, and phone alerts. And I have two new ideas. First, a seismic breaker: it cuts the power when strong shaking starts. Second, a vibration light: when the earthquake starts, the light turns on, so you can get out of the home easily. So Turkey doesn't need another switch brand. It needs an earthquake-safe home brand.", "So what makes Honyar special in Turkey? One brand for the whole home: power, light, water and smart home, all from one supplier. An earthquake-safe kit, with breakers, cable, lights and sensors in one package. It's smart home ready, and it works with Xiaomi, which many people in Turkey already use. It's ready for Turkish rules, because Turkey follows the European product rules. It has 40 years of quality. And it's a stable public partner, as part of the state-owned CETC group. So Honyar is not one more switch brand. It's the earthquake-safe home brand.", "So, three needs and three kits. A is safe wiring: safety breakers, fire-resistant cable, pipes and sensors. B is water-safe kitchens and bathrooms: splash-proof sockets, safety breakers and a damp sensor. And C, the most important, is being ready for the next earthquake, with the seismic breaker and the vibration light.", "And Chinese brands are already winning in Turkey. Xiaomi makes 5 million phones a year in Istanbul. Haier invested 85 million euros in two factories in Eski\u015fehir, its biggest production base in Europe. BYD signed a 1 billion dollar factory deal in Manisa in 2024, although it's on hold for now. And TCL makes phones with Ar\u00e7elik, a Turkish company. So the pattern is simple: make it in Turkey with a local partner, then sell in Turkey and to Europe. Honyar can follow the same path.", "So how does Honyar enter the market? In two steps. Step one: sell earthquake-safe kits with public builders. TOK\u0130 is owned by the Turkish government and builds huge housing projects every year. They are the ones who choose the brands: the switches, the sockets, everything. Step two: make it in Turkey with a Turkish partner. Then there is no extra import duty, and Turkey is a great base to sell to Europe. Just like Xiaomi and Haier: sell first, then build.", "So, let's build them safer, together. Thank you so much, and I'm happy to take your questions."];
 // Key points per slide: [label shown, regex that counts as "said it"]
 const KEYS = [
  [["I'm Can","\\bcan\\b|john|jan"],["solo","solo|alone|by myself"],["Honyar","hon ?yar|honey ?ar|hongyar|honeyar|honia|honya"],["Turkey","turkey|turkiye"]],
@@ -262,7 +279,7 @@ const norm = t => (' ' + t + ' ').toLowerCase().replace(/(\d),(\d)/g, '$1$2').re
 const has = (txt, re) => new RegExp(re, 'i').test(norm(txt));
 const FILLERS = /\b(um+|uh+|erm+|er|ah+|hmm+|you know|i mean|kind of|sort of|basically)\b/gi;
 function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 2600); }
-function show(id) { ['home', 'run', 'report', 'qa', 'words'].forEach(s => $(s).hidden = s !== id); window.scrollTo(0, 0); }
+function show(id) { ['home', 'script', 'run', 'report', 'qa', 'words'].forEach(s => $(s).hidden = s !== id); window.scrollTo(0, 0); }
 function cuesHTML(n) {
   return NOTES[n].split('\n').map(l => { const e = document.createElement('div'); e.textContent = l.replace(/^•\s*/, '• '); if (l.trim().startsWith('"')) e.className = 'open'; return e.outerHTML; }).join('');
 }
@@ -306,6 +323,7 @@ function renderHome() {
   const late = days <= 3, t = today(); DB.plan[t] = DB.plan[t] || {};
   const doneToday = DB.plan[t];
   const items = [
+    ['script', 'Read the full script out loud once'],
     ['words', 'Warm up: say all hard words once'],
     ['drill', 'Drill your weakest slide' + (w[0] ? ' (' + (w[0].n + 1) + ')' : '') + ' until it scores 80+'],
     [late ? 'nonotes' : 'full', late ? 'One no-notes run (final boss)' : 'One full run with cues'],
@@ -354,7 +372,7 @@ function startRun(mode, only) {
 function loadSlide(idx, preview) {
   const n = R.order[idx];
   $('slideImg').src = BASE + 'img/practice/s' + String(IMG[n]).padStart(2, '0') + '.jpg';
-  $('cues').innerHTML = cuesHTML(n); $('cues').classList.toggle('hidden', R.mode === 'nonotes');
+  $('cues').innerHTML = TXT ? '<div class="script">' + SCRIPT[n] + '</div>' : cuesHTML(n); $('btnTxt').textContent = TXT ? 'Show cues' : 'Show full text'; $('cues').classList.toggle('hidden', R.mode === 'nonotes');
   $('keys').innerHTML = KEYS[n].map(k => '<span>' + k[0] + '</span>').join('');
   $('live').innerHTML = '';
   const mc = $('manualChecks'); mc.hidden = !R.manual;
@@ -515,6 +533,16 @@ function sayWord(i) {
   function check(extra) { if (has(heard + ' ' + (extra || ''), w.re)) { clearTimeout(stop); micStop(); DB.words[w.w] = true; save(); addXP(2); $('w' + i).classList.add('ok'); $('wr' + i).textContent = 'Got it ✓'; if (WORDS.every(x => DB.words[x.w])) { award('words'); planDone('words'); } } }
 }
 
+/* ---------- full script ---------- */
+let TXT = false; try { TXT = localStorage.getItem('honyarTxt') === '1'; } catch (e) {}
+let SCR = 19; try { SCR = +localStorage.getItem('honyarScr') || 19; } catch (e) {}
+function scrSize(d) { SCR = Math.max(15, Math.min(30, SCR + d)); try { localStorage.setItem('honyarScr', SCR); } catch (e) {} document.documentElement.style.setProperty('--scr', SCR + 'px'); }
+function renderScript() {
+  show('script'); scrSize(0);
+  $('scrList').innerHTML = SCRIPT.map((t, n) => '<div class="card scr"><img src="' + BASE + 'img/practice/s' + String(IMG[n]).padStart(2, '0') + '.jpg" alt=""><div><div class="k">Slide ' + (n + 1) + ' · ' + TITLES[n] + ' · about ' + TARGET[n] + 's</div><p>' + t + '</p><button class="btn ghost" data-l="' + n + '" style="padding:7px 12px;font-size:14px">Listen</button></div></div>').join('');
+  planDone('script'); markDay(); save();
+}
+
 /* ---------- text to speech ---------- */
 function say(text) {
   try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = .95;
@@ -526,7 +554,7 @@ document.querySelectorAll('.mode').forEach(b => b.onclick = () => {
   const m = b.dataset.mode;
   if (m === 'full' || m === 'nonotes') startRun(m);
   else if (m === 'drill') { const w = weakest(); startDrillPicker(w[0] ? w[0].n : 0); }
-  else if (m === 'qa') startQA(); else if (m === 'words') startWords();
+  else if (m === 'script') renderScript(); else if (m === 'qa') startQA(); else if (m === 'words') startWords();
 });
 function startDrillPicker(pick) {
   // simple picker inside the run screen title
@@ -538,7 +566,10 @@ function startDrillPicker(pick) {
 }
 $('btnNext').onclick = next;
 $('btnQuit').onclick = () => { clearInterval(tick); micStop(); R = null; show('home'); renderHome(); };
-$('btnListen').onclick = () => { if (R) say(speakText(R.order[Math.max(0, R.i)])); };
+$('btnListen').onclick = () => { if (R) say(SCRIPT[R.order[Math.max(0, R.i)]]); };
+$('btnTxt').onclick = () => { TXT = !TXT; try { localStorage.setItem('honyarTxt', TXT ? '1' : '0'); } catch (e) {} if (R) loadSlide(Math.max(0, R.i), R.i < 0); };
+$('scrBigger').onclick = () => scrSize(2); $('scrSmaller').onclick = () => scrSize(-2); $('scrHome').onclick = () => { speechSynthesis.cancel(); show('home'); renderHome(); };
+$('scrList').onclick = e => { const l = e.target.dataset.l; if (l != null) say(SCRIPT[+l]); };
 $('btnPeek').onmousedown = () => peek(true); $('btnPeek').onmouseup = $('btnPeek').onmouseleave = () => peek(false);
 $('btnPeek').ontouchstart = e => { e.preventDefault(); peek(true); }; $('btnPeek').ontouchend = () => peek(false);
 $('btnAgain').onclick = () => { if (LAST.mode === 'drill') startDrillPicker(LAST.S.sl[0].n); else startRun(LAST.mode); };
