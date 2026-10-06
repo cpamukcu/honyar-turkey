@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Honyar Talk Trainer</title>
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/cpamukcu/honyar-turkey@b905e453b8b70f3c5c143d93ea4aa3d2753ce5f6/img/logo.png">
+<style>
+:root{--bg:#000;--card:#141416;--card2:#1c1c1f;--line:rgba(255,255,255,.12);--fg:#f5f5f7;--muted:#8e8e93;--white:#fff;--blue:#0a84ff;--green:#30d158;--amber:#ff9f0a;--red:#ff453a;--font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;cursor:pointer;background:none}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 20px 60px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;padding:6px 0 18px;border-bottom:1px solid var(--line)}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.01em;color:var(--white)}
+.brand small{display:block;font-weight:500;font-size:13px;color:var(--muted);letter-spacing:0}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin-left:auto}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;white-space:nowrap}
+.pill b{color:var(--white)}
+.xpbar{width:120px;height:6px;border-radius:9px;background:#2c2c2e;display:inline-block;vertical-align:middle;margin-left:8px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#5ac8fa)}
+h1{font-size:34px;letter-spacing:-.02em;margin:26px 0 6px;color:var(--white)}
+h2{font-size:22px;margin:0 0 12px;color:var(--white)}
+.sub{color:var(--muted);margin:0 0 20px;font-size:16px;line-height:1.45}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px}
+.mode{text-align:left;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s}
+.mode:hover{transform:translateY(-2px);border-color:rgba(10,132,255,.6)}
+.mode .k{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.mode .t{font-size:20px;font-weight:700;color:var(--white)}
+.mode .d{font-size:14px;color:var(--muted);line-height:1.4}
+.mode.boss .k{color:var(--amber)}
+.row{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px}
+.row>.card{flex:1 1 300px;min-width:0}
+.plan li{margin:6px 0;line-height:1.4}
+.plan li.done{color:var(--muted);text-decoration:line-through}
+.weak span{display:inline-block;margin:4px 6px 0 0;padding:5px 10px;border-radius:10px;background:rgba(255,69,58,.14);color:#ff9a93;font-size:14px}
+.spark{display:flex;align-items:flex-end;gap:5px;height:70px;margin-top:8px}
+.spark i{flex:1;max-width:26px;background:linear-gradient(180deg,#5ac8fa,var(--blue));border-radius:5px 5px 2px 2px;min-height:4px}
+.badges span{display:inline-block;margin:4px 6px 0 0;padding:6px 10px;border-radius:10px;background:var(--card2);border:1px solid var(--line);font-size:13px}
+.badges span.got{border-color:rgba(255,159,10,.6);color:#ffd08a}
+.btn{background:var(--blue);color:#fff;font-weight:700;border-radius:14px;padding:12px 18px;font-size:16px}
+.btn.ghost{background:var(--card2);color:var(--fg);border:1px solid var(--line)}
+.btn.warn{background:var(--amber);color:#000}
+.btn:disabled{opacity:.45;cursor:default}
+/* run screen */
+.run{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:18px}
+.stage{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:16/9}
+.stage img{width:100%;height:100%;object-fit:cover;display:block}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.timer{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.timer .big{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--white)}
+.timer .tgt{font-size:14px;color:var(--muted)}
+.meter{height:8px;border-radius:9px;background:#2c2c2e;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--green);transition:width .3s}
+.cues{font-size:16px;line-height:1.5;white-space:pre-line}
+.cues .open{font-weight:700;color:var(--white)}
+.cues.hidden{filter:blur(9px);user-select:none}
+.keys span{display:inline-block;margin:4px 5px 0 0;padding:4px 9px;border-radius:9px;font-size:13px;background:var(--card2);color:var(--muted);border:1px solid var(--line)}
+.keys span.hit{background:rgba(48,209,88,.16);color:#7ee69a;border-color:rgba(48,209,88,.5)}
+.live{font-size:14px;color:var(--muted);min-height:44px;max-height:110px;overflow:auto;line-height:1.4}
+.live b{color:var(--fg);font-weight:500}
+.micstate{font-size:13px;display:flex;align-items:center;gap:8px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--red);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.navrow{display:flex;gap:10px}
+.navrow .btn{flex:1}
+.hint{font-size:13px;color:var(--muted)}
+.check label{display:flex;gap:10px;align-items:flex-start;margin:7px 0;font-size:15px;cursor:pointer}
+.check input{margin-top:3px;width:18px;height:18px;accent-color:var(--green)}
+/* report */
+.score{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c,#30d158) calc(var(--p)*1%),#2c2c2e 0)}
+.ring div{width:122px;height:122px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:44px;font-weight:800;color:var(--white)}
+.parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 22px;flex:1;min-width:260px}
+.parts div{font-size:15px}
+.parts b{float:right;color:var(--white)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+td.ok{color:#7ee69a}td.mid{color:#ffd08a}td.bad{color:#ff9a93}
+.tblwrap{overflow-x:auto}
+.tips li{margin:8px 0;line-height:1.45}
+.qa-q{font-size:26px;font-weight:700;color:var(--white);line-height:1.3;margin:6px 0 14px}
+.model{white-space:pre-line;line-height:1.5}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.word .w{font-size:22px;font-weight:700;color:var(--white)}
+.word .p{color:var(--amber);font-size:15px;margin:2px 0 10px}
+.word .r{font-size:13px;color:var(--muted);min-height:18px;margin-top:8px}
+.word.ok{border-color:rgba(48,209,88,.6)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2c2c2e;border:1px solid var(--line);padding:12px 18px;border-radius:14px;font-size:15px;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast[hidden]{display:none}
+.banner{background:rgba(255,159,10,.12);border:1px solid rgba(255,159,10,.4);color:#ffd08a;padding:10px 14px;border-radius:14px;font-size:14px;margin-top:14px}
+[hidden]{display:none!important}
+@media (max-width:900px){.run{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">Honyar Talk Trainer<small>Practise until you own it</small></div>
+  <div class="stats">
+    <span class="pill" id="pDays"></span>
+    <span class="pill" id="pStreak"></span>
+    <span class="pill" id="pLevel"></span>
+  </div>
+</header>
+
+<!-- HOME -->
+<section id="home">
+  <h1 id="hello">Ready to practise, Can?</h1>
+  <p class="sub">Talk out loud like it's the real thing. I listen, time you, and tell you exactly what to fix. Target: <b>7–8 minutes</b>, calm pace, every key point.</p>
+  <div id="micBanner" class="banner" hidden></div>
+  <div class="grid">
+    <button class="card mode" data-mode="full"><span class="k">Mode 1</span><span class="t">Full run</span><span class="d">The whole talk, slide by slide, with your cues on screen. Scored out of 100.</span></button>
+    <button class="card mode" data-mode="drill"><span class="k">Mode 2</span><span class="t">Slide drill</span><span class="d">Repeat one slide until it's smooth. Starts with your weakest slide.</span></button>
+    <button class="card mode" data-mode="qa"><span class="k">Mode 3</span><span class="t">Professor Q&amp;A</span><span class="d">Random questions, 45 seconds to answer, then a model answer.</span></button>
+    <button class="card mode" data-mode="words"><span class="k">Mode 4</span><span class="t">Hard words</span><span class="d">Listen and say the tricky names until the app understands you.</span></button>
+    <button class="card mode boss" data-mode="nonotes"><span class="k">Final boss</span><span class="t">No-notes run</span><span class="d">Cues hidden. Hold <b>H</b> to peek, but every peek costs points.</span></button>
+  </div>
+  <div class="row">
+    <div class="card"><h2>Today's plan</h2><ul class="plan" id="plan"></ul></div>
+    <div class="card"><h2>Your progress</h2><div class="hint" id="progTxt"></div><div class="spark" id="spark"></div>
+      <div style="margin-top:14px" class="hint">Weakest slides</div><div class="weak" id="weak"></div></div>
+    <div class="card"><h2>Badges</h2><div class="badges" id="badges"></div></div>
+  </div>
+  <div class="row"><div class="card"><h2>Tips that always help</h2><ul class="tips">
+    <li><b>Start strong:</b> learn the first line of every slide by heart. The rest follows.</li>
+    <li><b>Breathe after numbers:</b> say "53 thousand" … pause … then the meaning.</li>
+    <li><b>Look up:</b> glance at the cue, then talk to the room, not to the phone.</li>
+    <li><b>Replace "um" with silence.</b> A short pause sounds confident; a filler sounds nervous.</li>
+  </ul><p class="hint">Your practice history is saved in this browser only.</p></div></div>
+</section>
+
+<!-- RUN -->
+<section id="run" hidden>
+  <h1 id="runTitle"></h1>
+  <p class="sub" id="runSub"></p>
+  <div class="run">
+    <div class="stage"><img id="slideImg" alt=""></div>
+    <div class="side">
+      <div class="card">
+        <div class="timer"><span class="big" id="tSlide">0:00</span><span class="tgt" id="tTarget"></span></div>
+        <div class="meter"><i id="tMeter"></i></div>
+        <div class="hint" style="margin-top:8px" id="tTotal"></div>
+      </div>
+      <div class="card"><div class="cues" id="cues"></div><div class="hint" id="peekHint" hidden style="margin-top:8px">Hold H (or press the button) to peek. Peeks: <b id="peeks">0</b></div></div>
+      <div class="card"><div class="hint">Key points</div><div class="keys" id="keys"></div>
+        <div class="check" id="manualChecks" hidden></div></div>
+      <div class="card"><div class="micstate"><span class="dot" id="micDot"></span><span id="micTxt">Microphone off</span></div><div class="live" id="live"></div></div>
+      <div class="navrow"><button class="btn ghost" id="btnListen">Listen</button><button class="btn ghost" id="btnPeek" hidden>Peek</button><button class="btn" id="btnNext">Start</button></div>
+      <button class="btn ghost" id="btnQuit">Stop and go back</button>
+      <div class="hint">Keys: Space or → = next slide · Esc = stop</div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORT -->
+<section id="report" hidden>
+  <h1 id="repTitle">Your result</h1>
+  <p class="sub" id="repSub"></p>
+  <div class="card score"><div class="ring" id="ring" style="--p:0"><div id="ringNum">0</div></div><div class="parts" id="parts"></div></div>
+  <div class="row"><div class="card"><h2>What to fix next</h2><ul class="tips" id="tips"></ul></div></div>
+  <div class="row"><div class="card"><h2>Slide by slide</h2><div class="tblwrap"><table id="tbl"></table></div></div></div>
+  <div class="row" style="gap:10px"><button class="btn" id="btnAgain">Try again</button><button class="btn ghost" id="btnCopy">Copy report for Claude</button><button class="btn ghost" id="btnHome">Home</button></div>
+</section>
+
+<!-- Q&A -->
+<section id="qa" hidden>
+  <h1>Professor Q&amp;A</h1>
+  <p class="sub">Answer out loud in under 45 seconds. Start with one clear sentence, then one reason, then one example.</p>
+  <div class="card">
+    <div class="hint" id="qaCount"></div>
+    <div class="qa-q" id="qaQ"></div>
+    <div class="timer"><span class="big" id="qaT">0:45</span><span class="micstate"><span class="dot" id="qaDot"></span><span id="qaMic"></span></span></div>
+    <div class="live" id="qaLive"></div>
+    <div class="keys" id="qaKeys"></div>
+    <div class="navrow" style="margin-top:14px"><button class="btn" id="qaStart">Start answering</button><button class="btn ghost" id="qaDone">I'm done</button></div>
+  </div>
+  <div class="card" id="qaResult" hidden style="margin-top:14px">
+    <h2 id="qaScore"></h2><div class="hint">A strong answer:</div><p class="model" id="qaModel"></p>
+    <div class="navrow"><button class="btn ghost" id="qaListen">Listen to it</button><button class="btn" id="qaNext">Next question</button><button class="btn ghost" id="qaHome">Home</button></div>
+  </div>
+</section>
+
+<!-- WORDS -->
+<section id="words" hidden>
+  <h1>Hard words</h1>
+  <p class="sub">Press <b>Listen</b>, then <b>Say it</b>. When the app understands you, the card turns green.</p>
+  <div class="words" id="wordGrid"></div>
+  <div class="row"><button class="btn ghost" id="wHome">Home</button></div>
+</section>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const BASE = "https://cdn.jsdelivr.net/gh/cpamukcu/honyar-turkey@b905e453b8b70f3c5c143d93ea4aa3d2753ce5f6/";
+const TITLES = ["Building Safer Homes, Together", "Today", "04:17", "We remember", "Turkey took it seriously", "Istanbul is next", "Families are changing", "The wall switch is a hard market", "Honyar's door: earthquake safety", "What makes Honyar special in Turkey", "Three needs, three kits", "Chinese brands are already winning in Turkey", "How Honyar enters Turkey", "Where Honyar stands", "How I will build the final plan", "Let's build them safer, together"];
+const NOTES = ["\"Hi everyone, I'm Can. I'm doing a solo presentation today.\"\n\u2022 My project: Honyar in Turkey", "\"I'll go in four steps.\"\n\u2022 1. The earthquake and the rebuild\n\u2022 2. How Turkish families are changing\n\u2022 3. Why switches won't work, and what will\n\u2022 4. Honyar's marketing plan in Turkey", "\"February 6th, 2023. 4:17 in the morning.\"\n\u2022 Most people asleep\n\u2022 Huge earthquake: Kahramanmara\u015f, south of Turkey\n\u2022 Winter, dark, the power went out", "(Let the video play. Wait for the number.)\n\u2022 53 thousand+ lives lost\n\u2022 11 provinces hit, about 14 million people\n\u2022 About 280 thousand buildings destroyed or badly damaged\n\u2022 Personal: some of my relatives were affected\n(Short pause.)", "\"After the earthquake, everything changed in Turkey.\"\n\u2022 About half a million new homes, in under 3 years\n\u2022 Istanbul: almost 1 million homes renewed in 13 years\n\u2022 New 2023 law: faster rebuilding\n\u2022 Point for Honyar: every new home needs safe power, light and water", "\"Unfortunately, Istanbul is next.\"\n\u2022 47% chance of a big one in the next 30 years\n(Point at the map.)\n\u2022 Orange line = the fault. Red part under Istanbul: quiet since 1766\n\u2022 April 2025: a 6.2. A serious warning\n\u2022 About 1.5 million older homes still to rebuild", "\"Families in Turkey are changing too.\"\n\u2022 Smaller homes: about 3 people each\n\u2022 1 in 5 homes: just one person\n\u2022 Almost 10 million people over 65\n\u2022 They want homes: simple, safe, a bit smart\n\u2022 Example: an alert on your phone if something's wrong at grandma's", "\"Honyar is famous in China for switches and sockets.\"\n\u2022 But in Turkey: a very hard market\n\u2022 Schneider and Legrand (luh-GRAHN): French. Viko: Turkish, owned by Panasonic\n\u2022 All three make switches in Turkey\n\u2022 Chinese breakers and cables: 10 to 15% extra duty\n\u2022 Honestly: Honyar needs a different way in", "\"So here is the door: earthquake safety.\"\n\u2022 Over half of fires after big earthquakes are electrical\n\u2022 Honyar already makes: fire-resistant cable, smoke sensors, phone alerts\n\u2022 New idea 1: seismic breaker, cuts the power when shaking starts\n\u2022 New idea 2: a light that turns on by itself, so you find the door\n\u2022 Japan already does this", "\"So, why Honyar?\"\n\u2022 One brand for the whole home: power, light, water, smart home\n\u2022 One earthquake kit, in one box\n\u2022 Works with the Xiaomi app people already use\n\u2022 Follows EU rules, the same rules Turkey uses\n\u2022 40 years of quality. Owned by the state, so a stable partner\n\u2022 Not one more switch brand: the earthquake-safe home brand", "\"From my research, I see three clear needs. And one kit for each.\"\n\u2022 A: Istanbul, 260 thousand+ homes rebuilt: the safe wiring pack\n\u2022 B: Hatay, 150 thousand+ new homes: water-safe kitchens and bathrooms\n\u2022 C: the next earthquake: the earthquake-safe kit, with my new ideas\n\u2022 All Honyar's own. \"New\" = my ideas for Turkey", "\"And Honyar wouldn't be the first Chinese brand in Turkey.\"\n\u2022 Xiaomi: phones made in Istanbul, 5 million a year\n\u2022 Haier: 85 million euros in Eski\u015fehir, its biggest base in Europe\n\u2022 BYD: car factory deal, on hold for now\n\u2022 The pattern: make it in Turkey with a partner, sell to Turkey and Europe", "\"So how does Honyar get in? Two steps.\"\n\u2022 Step 1, now: sell the kits with public builders. TOK\u0130, city renewal, AFAD\n\u2022 First: a small pilot in Hatay\n\u2022 Honyar is owned by the state: used to working with governments\n\u2022 Step 2, next: make it in Turkey with a partner. No extra duty, better chance in tenders\n\u2022 Like Xiaomi and Haier: sell first, then build locally", "\"A quick SWOT.\"\n\u2022 Strengths: 40 years, 4 product lines, a strong parent company\n\u2022 Weaknesses: unknown name in Turkey, extra duty\n\u2022 Opportunities: the huge rebuild, people want safety now\n\u2022 Threats: strong local brands, electricians stick with what they know", "\"For the final, I'll build the full plan, all from desk research.\"\n\u2022 Price: about 20 items, Turkish shop prices vs Honyar's China price, plus shipping and duty\n\u2022 Mark-up: Viko's public price list vs shop prices\n\u2022 Payment: trade reports, often post-dated cheques\n\u2022 Marketing: learn from Xiaomi, Haier and CHINT", "\"Let me end where I started.\"\n\u2022 One window was on. Now a family walks into their new home\n\u2022 Every home like this needs light, power and water\n\u2022 \"Let's build them safer, together.\"\n\u2022 Thank you! Happy to take your questions"];
+// Key points per slide: [label shown, regex that counts as "said it"]
+const KEYS = [
+ [["I'm Can","\\bcan\\b|john|jan"],["solo","solo|alone|by myself"],["Honyar","hon ?yar|honey ?ar|hongyar|honeyar|honia|honya"],["Turkey","turkey|turkiye"]],
+ [["four steps","four|4"],["earthquake","earthquake"],["families","famil"],["switches","switch"],["marketing plan","marketing|plan"]],
+ [["6 February 2023","february|feb"],["4:17 am","4 ?:? ?17|four seventeen|417"],["Kahramanmaraş","kahraman|maras|marash"],["power went out","power"]],
+ [["53 thousand lives","53|fifty.?three"],["11 provinces","11|eleven"],["14 million","14|fourteen"],["280 thousand buildings","280|two hundred (and )?eighty"],["your relatives","relative|family|families"]],
+ [["half a million homes","half a million|500|455|four hundred"],["Istanbul","istanbul"],["almost a million","million"],["new law","law"],["power, light, water","power|light|water"]],
+ [["Istanbul is next","istanbul"],["47%","47|forty.?seven"],["30 years","30|thirty"],["the fault","fault"],["1766","1766|seventeen sixty"],["6.2 warning","6\\.2|six point two|warning"],["1.5 million homes","1\\.5|one and a half|million"]],
+ [["smaller homes","small"],["3 people","three|3"],["1 in 5 alone","one in five|1 in 5|one person|alone"],["over 65","65|sixty.?five|older|elderly"],["simple, safe, smart","smart|safe|simple"]],
+ [["famous in China","china"],["switches and sockets","switch|socket"],["French brands","french|france"],["Viko / Panasonic","viko|vico|panasonic"],["made in Turkey","factor|make|made"],["extra duty","duty|tax|10|15"],["different way in","different"]],
+ [["the door","door"],["fires are electrical","fire"],["fire-resistant cable","cable"],["smoke sensor","smoke"],["seismic breaker","seismic|breaker"],["self-on light","light"],["Japan","japan"]],
+ [["one brand","one brand|whole home|whole flat"],["earthquake kit","kit"],["Xiaomi app","xiaomi|shall me|show me|app"],["EU rules","eu|europe|rules"],["40 years","40|forty"],["owned by the state","state|government"],["earthquake-safe brand","earthquake.?safe|safe home"]],
+ [["three needs","three|3"],["A: Istanbul wiring","wiring|istanbul"],["B: kitchens & baths","kitchen|bath|water"],["C: next earthquake","next earthquake|ready"],["one kit each","kit"]],
+ [["not the first","first"],["Xiaomi","xiaomi|shall me|show me"],["Haier","haier|higher|hire"],["BYD","byd|b y d|bid"],["local partner","partner"],["sell to Europe","europe"]],
+ [["two steps","two|2"],["public builders","public|builder"],["TOKİ","toki|toky|toque|tokey"],["pilot in Hatay","hatay|pilot"],["make it in Turkey","make|made|produce"],["owned by the state","state|government"]],
+ [["strengths","strength"],["weaknesses","weak"],["opportunities","opportunit"],["threats","threat"],["unknown name","name|unknown|new"]],
+ [["desk research","desk|research"],["price","price"],["mark-up","mark.?up|markup|margin"],["payment terms","payment|cheque|check"],["marketing","marketing|promotion"]],
+ [["end where I started","started|start"],["new home","home"],["light, power, water","light|power|water"],["build them safer","safer|together"],["thank you","thank"]]
+];
+// Target seconds per slide (sum about 7.9 minutes)
+const TARGET = [15,20,20,35,30,35,30,35,40,35,30,35,35,30,30,20];
+const QA = [
+ {q:"Why did you choose Turkey for Honyar?", k:[["rebuild","rebuild|new homes|million"],["earthquake","earthquake"],["Istanbul next","istanbul"],["bridge to Europe","europe|customs"],["I know the market","i know|my country|turkish"]],
+  a:"Because Turkey is rebuilding at a huge scale.\nAbout half a million new homes after the 2023 earthquake, and Istanbul still has 1.5 million older homes to renew.\nEvery one needs safe power, light and water.\nAnd I'm Turkish, so I know the market and the culture."},
+ {q:"Why would a builder choose Honyar instead of Schneider or Viko?", k:[["one kit","kit|one brand|package"],["earthquake safety","earthquake|seismic|safe"],["price","price|cheaper|cost"],["state partner","state|government|public"],["made in Turkey later","turkey|local|partner"]],
+  a:"Not for the switch alone. Honyar sells a complete earthquake-safe kit from one brand.\nThat is easier for builders, and it fits what the government wants after 2023.\nLater, made in Turkey with a partner, the price can compete too."},
+ {q:"How big is this market?", k:[["half a million","half a million|455|500"],["1 million renewed","million"],["1.5 million to renew","1\\.5|one and a half"],["every home needs","every|each"]],
+  a:"About half a million new homes in the earthquake region,\nalmost a million homes renewed in Istanbul in 13 years,\nand about 1.5 million older homes still to renew.\nEach home needs breakers, cable, lights and pipes."},
+ {q:"The seismic breaker does not exist in Turkey. Isn't that risky?", k:[["Japan already","japan"],["built on Honyar breakers","breaker|honyar"],["certification","tse|ce|certif|test"],["pilot first","pilot|test|small"]],
+  a:"It is new for Turkey, but not new in the world. Japan already promotes seismic breakers.\nHonyar can build it on its own breakers, get TSE and CE certification,\nand start with a small pilot in Hatay before a big launch."},
+ {q:"Chinese products pay extra duty in Turkey. How do you solve that?", k:[["step 2 local","local|turkey|partner|assemble"],["Xiaomi / Haier example","xiaomi|haier"],["no duty","duty|tax"],["public tenders","tender|public"]],
+  a:"In step one we accept the duty on a small range of kits.\nIn step two we assemble in Turkey with a Turkish partner, like Xiaomi and Haier did.\nThen there is no extra duty, and local goods get a price edge in public tenders."},
+ {q:"What is your pricing plan?", k:[["final presentation","final|research"],["compare prices","compare|price"],["below Schneider","below|cheaper|lower|schneider|legrand"],["near Viko","viko|value"]],
+  a:"The full price plan comes in the final presentation.\nI will compare about 20 products online and with Honyar's China prices plus duty.\nMy first idea: below Schneider and Legrand, close to Viko, but sold as a complete kit."},
+ {q:"What are the biggest risks?", k:[["strong local brands","brand|schneider|viko|legrand|local"],["electricians loyal","electrician|installer|loyal"],["unknown name","name|unknown|new"],["how you reduce it","pilot|certif|warranty|training|partner"]],
+  a:"Strong local brands, and electricians who trust the names they know.\nHonyar is also a new name in Turkey.\nTo reduce this: certification, a longer warranty, training for electricians, and a pilot with public builders first."},
+ {q:"How will electricians hear about Honyar?", k:[["training","training|teach|course"],["wholesalers","wholesal|shop|store"],["rewards","point|reward|loyal"],["public projects","public|toki|project"]],
+  a:"Through training days and the wholesalers where they buy every day.\nA simple points programme, like the big brands have.\nAnd public projects, because when electricians install Honyar there, they learn the brand."},
+ {q:"Why would a family pay for an earthquake kit?", k:[["fear after 2023","2023|earthquake|fear|remember"],["Istanbul next","istanbul|next"],["safety at night","night|dark|fire|power"],["phone alert","phone|alert|app"]],
+  a:"Because every family in Turkey remembers 2023, and Istanbul is next.\nThe kit stops electrical fires, gives light when the power goes out,\nand sends an alert to the family's phones."},
+ {q:"What is the very first step?", k:[["pilot","pilot"],["Hatay","hatay"],["public builders / TOKİ","toki|public|builder"],["measure results","measure|result|learn|test"]],
+  a:"A small pilot in new homes in Hatay with a public builder.\nWe install the earthquake-safe kit, measure the results,\nand use that as proof for Istanbul renewal projects."},
+ {q:"BYD paused its factory in Turkey. Doesn't that weaken your example?", k:[["honest: on hold","pause|hold|honest"],["Xiaomi and Haier worked","xiaomi|haier"],["pattern","pattern|local|partner"]],
+  a:"Yes, BYD's plant is on hold, and I say that on the slide.\nBut Xiaomi and Haier show the pattern works: make it in Turkey with a partner,\nthen sell to Turkey and Europe."},
+ {q:"What will you add for the final presentation?", k:[["price","price"],["mark-up","mark.?up|margin"],["payment terms","payment|credit|cheque"],["marketing plan","marketing|promotion|brand"]],
+  a:"A full plan, all from desk research:\nthe price ladder, the mark-up shops add, the payment terms Honyar should offer,\nand a 12-month marketing plan with clear goals."}
+];
+const WORDS = [
+ {w:"Legrand",p:"luh-GRAHN",re:"legrand|le grand|la grand"},{w:"Schneider",p:"SHNY-der",re:"schneider|snyder|schnider"},
+ {w:"seismic",p:"SIZE-mik",re:"seismic"},{w:"Xiaomi",p:"SHAO-mee",re:"xiaomi|shall me|show me|shaomi"},
+ {w:"Haier",p:"HIGH-er",re:"haier|higher"},{w:"Panasonic",p:"pan-uh-SON-ik",re:"panasonic"},
+ {w:"magnitude",p:"MAG-ni-tood",re:"magnitude"},{w:"vibration",p:"vy-BRAY-shun",re:"vibration"},
+ {w:"opportunities",p:"op-er-TOO-ni-teez",re:"opportunities"},{w:"weaknesses",p:"WEEK-ness-iz",re:"weaknesses"},
+ {w:"fire-resistant",p:"FIRE ri-ZIS-tunt",re:"fire.?resistant"},{w:"splash-proof",p:"SPLASH-proof",re:"splash.?proof"},
+ {w:"provinces",p:"PROV-in-siz",re:"provinces"},{w:"electricians",p:"ee-lek-TRISH-unz",re:"electrician"},
+ {w:"renewal",p:"ri-NEW-ul",re:"renewal"},{w:"wholesaler",p:"HOLE-say-ler",re:"wholesaler"}
+];
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+const norm = t => (' ' + t + ' ').toLowerCase().replace(/(\d),(\d)/g, '$1$2').replace(/[“”"!?;]/g, ' ').replace(/(^|[^\d])[.,:]|[.,:](?!\d)/g, '$1 ').replace(/\s+/g, ' ');
+const has = (txt, re) => new RegExp(re, 'i').test(norm(txt));
+const FILLERS = /\b(um+|uh+|erm+|er|ah+|hmm+|you know|i mean|kind of|sort of|basically)\b/gi;
+function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 2600); }
+function show(id) { ['home', 'run', 'report', 'qa', 'words'].forEach(s => $(s).hidden = s !== id); window.scrollTo(0, 0); }
+function cuesHTML(n) {
+  return NOTES[n].split('\n').map(l => { const e = document.createElement('div'); e.textContent = l.replace(/^•\s*/, '• '); if (l.trim().startsWith('"')) e.className = 'open'; return e.outerHTML; }).join('');
+}
+function speakText(n) { return NOTES[n].split('\n').filter(l => !l.trim().startsWith('(')).map(l => l.replace(/^•\s*/, '').replace(/"/g, '')).join('. ').replace(/\.\./g, '.'); }
+
+/* ---------- storage ---------- */
+const STORE = 'honyarTrainer.v1';
+let DB = { runs: [], qa: [], words: {}, xp: 0, days: [], badges: [], plan: {} };
+try { DB = Object.assign(DB, JSON.parse(localStorage.getItem(STORE) || '{}')); } catch (e) {}
+function save() { try { localStorage.setItem(STORE, JSON.stringify(DB)); } catch (e) {} }
+const today = () => new Date().toISOString().slice(0, 10);
+function markDay() { if (!DB.days.includes(today())) DB.days.push(today()); }
+function streak() { let s = 0, d = new Date(); for (;;) { const k = d.toISOString().slice(0, 10); if (DB.days.includes(k)) { s++; d.setDate(d.getDate() - 1); } else break; } return s; }
+const LEVELS = [[0, 'Rookie'], [300, 'Speaker'], [800, 'Confident'], [1500, 'Pro'], [2500, 'Keynote']];
+function level() { let i = 0; LEVELS.forEach((l, j) => { if (DB.xp >= l[0]) i = j; }); const next = LEVELS[i + 1]; return { name: LEVELS[i][1], pct: next ? (DB.xp - LEVELS[i][0]) / (next[0] - LEVELS[i][0]) * 100 : 100, next }; }
+function addXP(x) { DB.xp += Math.round(x); markDay(); save(); }
+const BADGES = [
+  ['first', 'First full run'], ['eight', 'Full run in 7–8 min'], ['eighty', 'Score 80+'], ['ninety', 'Score 90+'],
+  ['boss', 'No-notes run done'], ['clean', 'No-notes, zero peeks'], ['qa10', '10 Q&A answers'], ['words', 'All hard words'], ['streak3', '3-day streak'], ['streak5', '5-day streak']];
+function award(id) { if (!DB.badges.includes(id)) { DB.badges.push(id); save(); toast('New badge: ' + BADGES.find(b => b[0] === id)[1]); } }
+
+/* ---------- home ---------- */
+function weakest() {
+  const agg = Array.from({ length: 16 }, () => ({ s: 0, c: 0 }));
+  DB.runs.slice(-6).forEach(r => r.slides.forEach(s => { if (s.cov != null) { agg[s.n].s += s.cov * 100 * .7 + s.timeOk * 30; agg[s.n].c++; } }));
+  return agg.map((a, n) => ({ n, v: a.c ? a.s / a.c : null })).filter(a => a.v != null).sort((a, b) => a.v - b.v).slice(0, 3);
+}
+function renderHome() {
+  const talk = new Date('2026-10-12T09:00:00'), now = new Date();
+  const days = Math.max(0, Math.ceil((talk - now) / 864e5));
+  $('pDays').innerHTML = '<b>' + days + '</b> days to your talk';
+  $('pStreak').innerHTML = 'Streak <b>' + streak() + '</b> day' + (streak() === 1 ? '' : 's');
+  const L = level(); $('pLevel').innerHTML = 'Level <b>' + L.name + '</b> · ' + DB.xp + ' XP<span class="xpbar"><i style="width:' + L.pct + '%"></i></span>';
+  const h = now.getHours(); $('hello').textContent = (h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening') + ', Can. Ready to practise?';
+  const full = DB.runs.filter(r => r.mode !== 'drill');
+  $('progTxt').textContent = full.length ? 'Last ' + Math.min(10, full.length) + ' runs · best ' + Math.max(...full.map(r => r.score)) + ' / 100' : 'No full runs yet. Start with Mode 1.';
+  $('spark').innerHTML = full.slice(-10).map(r => '<i title="' + r.score + '" style="height:' + Math.max(4, r.score * .7) + 'px"></i>').join('');
+  const w = weakest(); $('weak').innerHTML = w.length ? w.map(x => '<span>' + (x.n + 1) + '. ' + TITLES[x.n] + '</span>').join('') : '<span style="background:none;color:var(--muted);padding:0">Do one full run first.</span>';
+  $('badges').innerHTML = BADGES.map(b => '<span class="' + (DB.badges.includes(b[0]) ? 'got' : '') + '">' + (DB.badges.includes(b[0]) ? '★ ' : '') + b[1] + '</span>').join('');
+  // plan: harder as the day gets closer
+  const late = days <= 3, t = today(); DB.plan[t] = DB.plan[t] || {};
+  const doneToday = DB.plan[t];
+  const items = [
+    ['words', 'Warm up: say all hard words once'],
+    ['drill', 'Drill your weakest slide' + (w[0] ? ' (' + (w[0].n + 1) + ')' : '') + ' until it scores 80+'],
+    [late ? 'nonotes' : 'full', late ? 'One no-notes run (final boss)' : 'One full run with cues'],
+    ['qa', 'Answer 5 professor questions'],
+    [late ? 'nonotes2' : 'full2', late ? 'Second no-notes run, aim for 85+' : 'Second full run, beat your first score']];
+  $('plan').innerHTML = items.map(i => '<li class="' + (doneToday[i[0]] ? 'done' : '') + '">' + i[1] + '</li>').join('');
+  if (streak() >= 3) award('streak3'); if (streak() >= 5) award('streak5');
+}
+function planDone(k) { const t = today(); DB.plan[t] = DB.plan[t] || {}; if (DB.plan[t][k]) { if (k === 'full' || k === 'nonotes') DB.plan[t][k + '2'] = true; } DB.plan[t][k] = true; save(); }
+
+/* ---------- speech ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recWanted = false, onFinal = null, onInterim = null, lastHeard = 0, recBroken = false;
+function micStart(fin, inter) {
+  onFinal = fin; onInterim = inter; lastHeard = Date.now();
+  if (!SR || recBroken) return false;
+  recWanted = true;
+  if (!rec) {
+    rec = new SR(); rec.lang = 'en-US'; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = e => { lastHeard = Date.now(); let interim = ''; for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) onFinal && onFinal(r[0].transcript); else interim += r[0].transcript; } onInterim && onInterim(interim); };
+    rec.onend = () => { if (recWanted) setTimeout(() => { try { rec.start(); } catch (e) {} }, 250); };
+    rec.onerror = e => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { recBroken = true; recWanted = false; micMsg('Microphone blocked. Allow it in the address bar, or use manual mode.', 'bad'); switchManual(); }
+      else if (e.error === 'network') { recBroken = true; recWanted = false; micMsg('Speech service unreachable (VPN on?). Switched to manual mode.', 'bad'); switchManual(); }
+    };
+  }
+  try { rec.start(); } catch (e) {}
+  return true;
+}
+function micStop() { recWanted = false; try { rec && rec.stop(); } catch (e) {} }
+function switchManual() { if (R && !R.manual) { R.manual = true; if (R.i >= 0) loadSlide(R.i); } }
+function micMsg(m, state) { ['micTxt', 'qaMic'].forEach(id => { if ($(id)) $(id).textContent = m; }); ['micDot', 'qaDot'].forEach(id => $(id) && $(id).classList.toggle('on', state === 'on')); if (state === 'bad') { const b = $('micBanner'); b.textContent = m; b.hidden = false; } }
+window.__fakeSpeech = (t) => { lastHeard = Date.now(); onFinal && onFinal(t); }; // for testing
+
+/* ---------- run (full / no-notes / drill) ---------- */
+let R = null, tick = null;
+function startRun(mode, only) {
+  const order = mode === 'drill' ? [only] : [...Array(16).keys()];
+  R = { mode, order, i: -1, slides: order.map(n => ({ n, text: '', dur: 0, pauses: 0, peeks: 0, manual: {} })), t0: 0, st: 0, peeks: 0, started: false, manual: !SR || recBroken };
+  show('run');
+  $('runTitle').textContent = mode === 'full' ? 'Full run' : mode === 'nonotes' ? 'No-notes run' : 'Slide drill · slide ' + (only + 1);
+  $('runSub').textContent = R.manual ? 'Manual mode: talk out loud, then tick the points you really said. Press Start when you are ready.' : 'Press Start, then talk. Space or → moves to the next slide. I listen the whole time.';
+  $('btnNext').textContent = 'Start'; $('btnPeek').hidden = mode !== 'nonotes'; $('peekHint').hidden = mode !== 'nonotes';
+  loadSlide(0, true); renderTimer();
+}
+function loadSlide(idx, preview) {
+  const n = R.order[idx];
+  $('slideImg').src = BASE + 'img/practice/s' + String(n + 1).padStart(2, '0') + '.jpg';
+  $('cues').innerHTML = cuesHTML(n); $('cues').classList.toggle('hidden', R.mode === 'nonotes');
+  $('keys').innerHTML = KEYS[n].map(k => '<span>' + k[0] + '</span>').join('');
+  $('live').innerHTML = '';
+  const mc = $('manualChecks'); mc.hidden = !R.manual;
+  mc.innerHTML = R.manual ? KEYS[n].map((k, j) => '<label><input type="checkbox" data-j="' + j + '"> I said: ' + k[0] + '</label>').join('') : '';
+  $('tTarget').textContent = 'target ' + TARGET[n] + 's';
+  if (!preview) { $('runTitle').textContent = (R.mode === 'drill' ? 'Slide drill · ' : 'Slide ' + (n + 1) + ' of 16 · ') + TITLES[n]; }
+}
+function onFinalRun(t) {
+  if (!R || R.i < 0) return; const s = R.slides[R.i]; s.text += ' ' + t;
+  const n = s.n; const sp = $('keys').children;
+  KEYS[n].forEach((k, j) => { if (has(s.text, k[1])) sp[j].classList.add('hit'); });
+  $('live').innerHTML = '<b>' + s.text.trim().split(' ').slice(-40).join(' ') + '</b>';
+}
+function onInterimRun(t) { if (!R || R.i < 0) return; const s = R.slides[R.i]; $('live').innerHTML = '<b>' + s.text.trim().split(' ').slice(-30).join(' ') + '</b> ' + t; }
+function next() {
+  if (!R) return;
+  const now = Date.now();
+  if (R.i >= 0) { const s = R.slides[R.i]; s.dur = (now - R.st) / 1000; if (R.manual) s.manual = [...$('manualChecks').querySelectorAll('input')].map(c => c.checked); }
+  if (R.i === -1) { R.t0 = now; R.started = true; if (!R.manual) { if (micStart(onFinalRun, onInterimRun)) micMsg('Listening…', 'on'); else { R.manual = true; micMsg('Manual mode: tick what you said', 'off'); } } else micMsg('Manual mode: tick what you said', 'off'); }
+  R.i++;
+  if (R.i >= R.order.length) return finishRun();
+  R.st = now; loadSlide(R.i);
+  $('btnNext').textContent = R.i === R.order.length - 1 ? 'Finish' : 'Next slide →';
+  clearInterval(tick); tick = setInterval(() => { renderTimer(); pauseWatch(); }, 250);
+}
+let pauseOpen = false;
+function pauseWatch() { if (!R || R.manual || R.i < 0) return; const s = R.slides[R.i]; const gap = Date.now() - lastHeard; if (gap > 4000 && s.text.trim() && !pauseOpen) { s.pauses++; pauseOpen = true; } if (gap < 1000) pauseOpen = false; }
+function renderTimer() {
+  if (!R) return; const now = Date.now();
+  const sl = R.i >= 0 ? (now - R.st) / 1000 : 0, tot = R.started ? (now - R.t0) / 1000 : 0;
+  const n = R.order[Math.max(0, R.i)]; const tg = TARGET[n];
+  $('tSlide').textContent = fmt(sl);
+  const p = Math.min(100, sl / tg * 100); const m = $('tMeter'); m.style.width = p + '%'; m.style.background = sl > tg * 1.5 ? 'var(--red)' : sl > tg * 1.15 ? 'var(--amber)' : 'var(--green)';
+  $('tTotal').textContent = R.mode === 'drill' ? '' : 'Total ' + fmt(tot) + ' of 7:00–8:00';
+}
+function peek(on) { if (!R || R.mode !== 'nonotes' || R.i < 0) return; $('cues').classList.toggle('hidden', !on); if (on) { R.slides[R.i].peeks++; R.peeks++; $('peeks').textContent = R.peeks; } }
+
+function scoreRun() {
+  const sl = R.slides.map(s => {
+    const n = s.n, keys = KEYS[n];
+    const hits = R.manual ? (s.manual || []).filter(Boolean).length : keys.filter(k => has(s.text, k[1])).length;
+    const missed = R.manual ? keys.filter((k, j) => !(s.manual || [])[j]).map(k => k[0]) : keys.filter(k => !has(s.text, k[1])).map(k => k[0]);
+    const words = s.text.trim() ? s.text.trim().split(/\s+/).length : 0;
+    const fill = (s.text.match(FILLERS) || []).length;
+    const tg = TARGET[n], ratio = s.dur / tg;
+    return { n, cov: hits / keys.length, missed, words, wpm: s.dur > 3 ? Math.round(words / (s.dur / 60)) : 0, fill, dur: s.dur, tg, timeOk: ratio >= .5 && ratio <= 1.5 ? 1 : 0, pauses: s.pauses, peeks: s.peeks, opener: openerSaid(n, s.text) };
+  });
+  const total = sl.reduce((a, s) => a + s.dur, 0), words = sl.reduce((a, s) => a + s.words, 0), fill = sl.reduce((a, s) => a + s.fill, 0), pauses = sl.reduce((a, s) => a + s.pauses, 0);
+  const wpm = total ? Math.round(words / (total / 60)) : 0;
+  const cov = sl.reduce((a, s) => a + s.cov, 0) / sl.length;
+  const pts = {};
+  pts.cov = Math.round(cov * 40);
+  if (R.mode === 'drill') { const r = sl[0].dur / sl[0].tg; pts.time = Math.round(25 * (r >= .7 && r <= 1.3 ? 1 : r >= .5 && r <= 1.6 ? .6 : .2)); }
+  else { const m = total / 60; const tScore = m >= 7 && m <= 8 ? 1 : m >= 6.3 && m <= 8.7 ? .7 : m >= 5.5 && m <= 9.5 ? .4 : .15; pts.time = Math.round(15 * tScore + 10 * sl.filter(s => s.timeOk).length / sl.length); }
+  if (R.manual) { pts.pace = 20; pts.flu = 15; }
+  else {
+    pts.pace = Math.round(20 * (wpm >= 120 && wpm <= 155 ? 1 : wpm >= 105 && wpm <= 170 ? .7 : wpm >= 90 && wpm <= 185 ? .4 : .15));
+    const fpm = total ? fill / (total / 60) : 0, ppm = total ? pauses / (total / 60) : 0;
+    pts.flu = Math.round(10 * (fpm < 1 ? 1 : fpm < 2.5 ? .6 : .25) + 5 * (ppm < .4 ? 1 : ppm < 1 ? .6 : .25));
+  }
+  let score = pts.cov + pts.time + pts.pace + pts.flu;
+  if (R.mode === 'nonotes') score = Math.max(0, score - Math.min(15, R.peeks * 1.5));
+  return { sl, total, wpm, fill, pauses, cov, pts, score: Math.min(100, Math.round(score)) };
+}
+function openerSaid(n, txt) { const op = (NOTES[n].split('\n')[0].match(/"([^"]+)"/) || [])[1]; if (!op) return null; const w = norm(op).split(' ').filter(x => x.length > 3).slice(0, 4); const t = norm(txt.split(' ').slice(0, 25).join(' ')); return w.filter(x => t.includes(x)).length >= Math.min(2, w.length); }
+
+let LAST = null;
+function finishRun() {
+  clearInterval(tick); micStop();
+  const S = scoreRun(); LAST = { mode: R.mode, S, at: new Date().toISOString(), texts: R.slides.map(s => s.text.trim()), manual: R.manual, peeks: R.peeks };
+  DB.runs.push({ at: LAST.at, mode: R.mode, score: S.score, total: Math.round(S.total), slides: S.sl.map(s => ({ n: s.n, cov: s.cov, timeOk: s.timeOk })) }); save();
+  addXP(R.mode === 'drill' ? S.score / 4 : R.mode === 'nonotes' ? S.score * 1.3 : S.score);
+  planDone(R.mode === 'drill' ? 'drill' : R.mode);
+  if (R.mode !== 'drill') { award('first'); const m = S.total / 60; if (m >= 7 && m <= 8) award('eight'); if (S.score >= 80) award('eighty'); if (S.score >= 90) award('ninety'); }
+  if (R.mode === 'nonotes') { award('boss'); if (!R.peeks) award('clean'); }
+  renderReport(); R = null;
+}
+function renderReport() {
+  const { S } = LAST; show('report');
+  const c = S.score >= 85 ? '#30d158' : S.score >= 65 ? '#ff9f0a' : '#ff453a';
+  $('ring').style.setProperty('--p', S.score); $('ring').style.setProperty('--c', c); $('ringNum').textContent = S.score;
+  $('repTitle').textContent = S.score >= 90 ? 'Outstanding. You own this talk.' : S.score >= 80 ? 'Strong run. A little polish left.' : S.score >= 65 ? 'Good base. Fix the points below.' : 'Keep going. Every run makes it easier.';
+  $('repSub').textContent = (LAST.mode === 'drill' ? 'Slide drill' : LAST.mode === 'nonotes' ? 'No-notes run' : 'Full run') + ' · ' + fmt(S.total) + (LAST.manual ? ' · manual mode' : ' · ' + S.wpm + ' words/min');
+  const p = S.pts;
+  $('parts').innerHTML = '<div>Key points <b>' + p.cov + ' / 40</b></div><div>Timing <b>' + p.time + ' / 25</b></div><div>Pace <b>' + (LAST.manual ? '—' : p.pace + ' / 20') + '</b></div><div>Fluency <b>' + (LAST.manual ? '—' : p.flu + ' / 15') + '</b></div>' +
+    (LAST.mode === 'nonotes' ? '<div>Peeks <b>' + LAST.peeks + '</b></div>' : '') + (LAST.manual ? '' : '<div>Fillers <b>' + S.fill + '</b></div><div>Long freezes <b>' + S.pauses + '</b></div>');
+  $('tips').innerHTML = tips(S).map(t => '<li>' + t + '</li>').join('');
+  const cls = (v, a, b) => v >= a ? 'ok' : v >= b ? 'mid' : 'bad';
+  $('tbl').innerHTML = '<tr><th>Slide</th><th>Time</th><th>Key points</th><th>Missed</th>' + (LAST.manual ? '' : '<th>Pace</th>') + '</tr>' + S.sl.map(s => {
+    const r = s.dur / s.tg; const tc = r >= .7 && r <= 1.3 ? 'ok' : r >= .5 && r <= 1.6 ? 'mid' : 'bad';
+    return '<tr><td>' + (s.n + 1) + '. ' + TITLES[s.n] + '</td><td class="' + tc + '">' + fmt(s.dur) + ' / ' + fmt(s.tg) + '</td><td class="' + cls(s.cov, .8, .5) + '">' + Math.round(s.cov * 100) + '%</td><td>' + (s.missed.join(', ') || '—') + '</td>' + (LAST.manual ? '' : '<td class="' + (s.wpm >= 110 && s.wpm <= 165 ? 'ok' : s.wpm ? 'mid' : '') + '">' + (s.wpm || '—') + '</td>') + '</tr>';
+  }).join('');
+  renderHome();
+}
+function tips(S) {
+  const out = [], sl = S.sl;
+  const worst = sl.filter(s => s.cov < .7).sort((a, b) => a.cov - b.cov).slice(0, 3);
+  worst.forEach(s => out.push('<b>Slide ' + (s.n + 1) + ':</b> you missed ' + s.missed.slice(0, 3).map(m => '“' + m + '”').join(', ') + '. Start with: <i>' + (NOTES[s.n].split('\n')[0]) + '</i>'));
+  const slow = sl.filter(s => s.dur > s.tg * 1.5).sort((a, b) => b.dur / b.tg - a.dur / a.tg).slice(0, 2);
+  slow.forEach(s => out.push('<b>Slide ' + (s.n + 1) + ' took ' + Math.round(s.dur) + 's</b> (target ' + s.tg + 's). Say only the bullets, then move on.'));
+  const fast = sl.filter(s => s.dur < s.tg * .5 && s.dur > 0).slice(0, 2);
+  fast.forEach(s => out.push('<b>Slide ' + (s.n + 1) + ' was very short</b> (' + Math.round(s.dur) + 's). Give the audience time to read it: say the key number, pause, explain.'));
+  if (!LAST.manual) {
+    if (S.wpm > 165) out.push('<b>You spoke fast (' + S.wpm + ' words/min).</b> Aim for 130–150. Pause one second after every number.');
+    else if (S.wpm && S.wpm < 105) out.push('<b>You spoke slowly (' + S.wpm + ' words/min).</b> Learn the opening lines by heart so you start each slide with energy.');
+    if (S.fill >= 4) out.push('<b>' + S.fill + ' fillers</b> (um, uh, you know…). When you need time, just stop for a second. Silence sounds confident.');
+    if (S.pauses >= 3) out.push('<b>' + S.pauses + ' long freezes.</b> Drill the slides where you stopped. The first line of each slide is your anchor.');
+    const noOpen = sl.filter(s => s.opener === false).slice(0, 2);
+    noOpen.forEach(s => out.push('<b>Slide ' + (s.n + 1) + ':</b> you didn\'t start with the opening line. Learn it word for word: <i>' + NOTES[s.n].split('\n')[0] + '</i>'));
+  }
+  const m = S.total / 60;
+  if (LAST.mode !== 'drill' && m > 8.5) out.push('<b>Total ' + fmt(S.total) + '</b>: too long. Cut extra sentences on your slowest slides.');
+  if (LAST.mode !== 'drill' && m < 6.3) out.push('<b>Total ' + fmt(S.total) + '</b>: a bit short. Slow down and let each number land.');
+  if (!out.length) out.push('Excellent. Next: try the <b>No-notes run</b>, and practise standing up, looking at the room.');
+  return out;
+}
+function reportText() {
+  const { S } = LAST; let t = 'Honyar practice report · ' + LAST.at.slice(0, 16).replace('T', ' ') + '\nMode: ' + LAST.mode + ' · Score ' + S.score + '/100 · Time ' + fmt(S.total) + (LAST.manual ? ' (manual)' : ' · ' + S.wpm + ' wpm · fillers ' + S.fill + ' · freezes ' + S.pauses) + '\n\n';
+  S.sl.forEach((s, i) => { t += 'Slide ' + (s.n + 1) + ' (' + TITLES[s.n] + ') ' + fmt(s.dur) + '/' + fmt(s.tg) + ' · points ' + Math.round(s.cov * 100) + '%' + (s.missed.length ? ' · missed: ' + s.missed.join(', ') : '') + '\n  "' + (LAST.texts[i] || '(no transcript)') + '"\n'; });
+  return t + '\nPlease coach me: what should I change in how I say this?';
+}
+
+/* ---------- Q&A ---------- */
+let Q = null;
+function startQA() { show('qa'); Q = { order: [...QA.keys()].sort(() => Math.random() - .5), i: 0, text: '', t: null, end: 0, count: 0 }; loadQ(); }
+function loadQ() {
+  const q = QA[Q.order[Q.i % QA.length]]; Q.text = ''; $('qaQ').textContent = q.q; $('qaT').textContent = '0:45';
+  $('qaKeys').innerHTML = q.k.map(k => '<span>' + k[0] + '</span>').join(''); $('qaLive').textContent = ''; $('qaResult').hidden = true;
+  $('qaStart').disabled = false; $('qaDone').disabled = true; $('qaCount').textContent = 'Question ' + (Q.count + 1) + ' · think for a few seconds, then press Start';
+  $('qaMic').textContent = SR && !recBroken ? 'Microphone ready' : 'Manual mode: answer out loud, then press I\'m done'; $('qaDot').classList.remove('on');
+}
+function qaStart() {
+  $('qaStart').disabled = true; $('qaDone').disabled = false; Q.end = Date.now() + 45000;
+  const q = QA[Q.order[Q.i % QA.length]];
+  if (SR && !recBroken) { micStart(t => { Q.text += ' ' + t; $('qaLive').innerHTML = '<b>' + Q.text + '</b>'; q.k.forEach((k, j) => { if (has(Q.text, k[1])) $('qaKeys').children[j].classList.add('hit'); }); }, t => { $('qaLive').innerHTML = '<b>' + Q.text + '</b> ' + t; }); $('qaMic').textContent = 'Listening…'; $('qaDot').classList.add('on'); }
+  clearInterval(Q.t); Q.t = setInterval(() => { const left = Math.max(0, (Q.end - Date.now()) / 1000); $('qaT').textContent = fmt(left); if (!left) qaDone(); }, 250);
+}
+function qaDone() {
+  clearInterval(Q.t); micStop(); $('qaDot').classList.remove('on'); $('qaDone').disabled = true;
+  const q = QA[Q.order[Q.i % QA.length]]; const hits = q.k.filter(k => has(Q.text, k[1])).length; const sc = Math.round(hits / q.k.length * 100);
+  const manual = !(SR && !recBroken);
+  $('qaScore').textContent = manual ? 'Compare your answer with this one' : 'You covered ' + hits + ' of ' + q.k.length + ' key points (' + sc + '%)';
+  $('qaModel').textContent = q.a; $('qaResult').hidden = false;
+  Q.count++; DB.qa.push({ at: new Date().toISOString(), q: Q.order[Q.i % QA.length], sc: manual ? null : sc }); addXP(10 + (manual ? 5 : sc / 10));
+  if (Q.count >= 5) planDone('qa'); if (DB.qa.length >= 10) award('qa10'); save();
+}
+
+/* ---------- words ---------- */
+function startWords() {
+  show('words');
+  $('wordGrid').innerHTML = WORDS.map((w, i) => '<div class="card word' + (DB.words[w.w] ? ' ok' : '') + '" id="w' + i + '"><div class="w">' + w.w + '</div><div class="p">' + w.p + '</div><div class="navrow"><button class="btn ghost" data-l="' + i + '">Listen</button><button class="btn" data-s="' + i + '">Say it</button></div><div class="r" id="wr' + i + '">' + (DB.words[w.w] ? 'Got it ✓' : '') + '</div></div>').join('');
+}
+function sayWord(i) {
+  const w = WORDS[i]; if (!(SR && !recBroken)) { DB.words[w.w] = true; save(); $('w' + i).classList.add('ok'); $('wr' + i).textContent = 'Marked as practised (manual mode)'; return; }
+  $('wr' + i).textContent = 'Listening… say "' + w.w + '"';
+  let heard = ''; micStart(t => { heard += ' ' + t; check(); }, t => { check(t); });
+  const stop = setTimeout(() => { micStop(); if (!$('w' + i).classList.contains('ok')) $('wr' + i).textContent = 'I heard: "' + (heard.trim() || '…') + '". Try again, slower.'; }, 4500);
+  function check(extra) { if (has(heard + ' ' + (extra || ''), w.re)) { clearTimeout(stop); micStop(); DB.words[w.w] = true; save(); addXP(2); $('w' + i).classList.add('ok'); $('wr' + i).textContent = 'Got it ✓'; if (WORDS.every(x => DB.words[x.w])) { award('words'); planDone('words'); } } }
+}
+
+/* ---------- text to speech ---------- */
+function say(text) {
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = .95;
+    const v = speechSynthesis.getVoices().find(v => /en-US/.test(v.lang) && /Samantha|Google US|Alex|Ava/.test(v.name)) || speechSynthesis.getVoices().find(v => /en-US/.test(v.lang)); if (v) u.voice = v; speechSynthesis.speak(u); } catch (e) { toast('Your browser cannot read text aloud.'); }
+}
+
+/* ---------- wiring ---------- */
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => {
+  const m = b.dataset.mode;
+  if (m === 'full' || m === 'nonotes') startRun(m);
+  else if (m === 'drill') { const w = weakest(); startDrillPicker(w[0] ? w[0].n : 0); }
+  else if (m === 'qa') startQA(); else if (m === 'words') startWords();
+});
+function startDrillPicker(pick) {
+  // simple picker inside the run screen title
+  startRun('drill', pick);
+  const sel = document.createElement('select'); sel.id = 'drillSel'; sel.style.cssText = 'margin-left:12px;font:inherit;font-size:16px;background:#1c1c1f;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:6px 10px';
+  TITLES.forEach((t, i) => { const o = document.createElement('option'); o.value = i; o.textContent = (i + 1) + '. ' + t; if (i === pick) o.selected = true; sel.appendChild(o); });
+  sel.onchange = () => { if (R && R.i < 0) { startDrillPicker(+sel.value); } };
+  $('runSub').appendChild(document.createElement('br')); $('runSub').appendChild(document.createTextNode('Slide: ')); $('runSub').appendChild(sel);
+}
+$('btnNext').onclick = next;
+$('btnQuit').onclick = () => { clearInterval(tick); micStop(); R = null; show('home'); renderHome(); };
+$('btnListen').onclick = () => { if (R) say(speakText(R.order[Math.max(0, R.i)])); };
+$('btnPeek').onmousedown = () => peek(true); $('btnPeek').onmouseup = $('btnPeek').onmouseleave = () => peek(false);
+$('btnPeek').ontouchstart = e => { e.preventDefault(); peek(true); }; $('btnPeek').ontouchend = () => peek(false);
+$('btnAgain').onclick = () => { if (LAST.mode === 'drill') startDrillPicker(LAST.S.sl[0].n); else startRun(LAST.mode); };
+$('btnHome').onclick = () => { show('home'); renderHome(); };
+$('btnCopy').onclick = () => { const t = reportText(); navigator.clipboard && navigator.clipboard.writeText(t).then(() => toast('Copied. Paste it to Claude for coaching.'), () => fallbackCopy(t)) || fallbackCopy(t); };
+function fallbackCopy(t) { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); toast('Copied.'); } catch (e) { toast('Select and copy the report manually.'); } a.remove(); }
+$('qaStart').onclick = qaStart; $('qaDone').onclick = qaDone; $('qaNext').onclick = () => { Q.i++; loadQ(); }; $('qaHome').onclick = () => { clearInterval(Q && Q.t); micStop(); show('home'); renderHome(); };
+$('qaListen').onclick = () => say($('qaModel').textContent.replace(/\n/g, ' '));
+$('wordGrid').onclick = e => { const l = e.target.dataset.l, s = e.target.dataset.s; if (l != null) say(WORDS[l].w); if (s != null) sayWord(+s); };
+$('wHome').onclick = () => { micStop(); show('home'); renderHome(); };
+document.addEventListener('keydown', e => {
+  if (!$('run').hidden && R) {
+    if (e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
+    else if (e.key === 'Escape') $('btnQuit').click();
+    else if ((e.key === 'h' || e.key === 'H') && !e.repeat) peek(true);
+  }
+});
+document.addEventListener('keyup', e => { if (e.key === 'h' || e.key === 'H') peek(false); });
+if (!SR) micMsg('Speech recognition is not available in this browser. Use Chrome on your laptop for scoring, or practise in manual mode.', 'bad');
+renderHome();
+</script>
+</body>
+</html>
