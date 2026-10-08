@@ -760,6 +760,17 @@ const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\
     clearTimeout(idleT); idleT=setTimeout(()=>{bar.classList.add('idle');help.classList.add('idle');},2600);
   }
   document.addEventListener('mousemove',wake); wake();
+
+  // Keep the current slide's video playing. Chrome refuses or pauses video while the window
+  // is hidden or covered ("paused to save power"), so retry until it plays. Videos that have
+  // reached their end (cover, quake, closing) are left on their last frame.
+  function kick(v){ try{ const p=v.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+  function keepPlaying(){
+    slides[cur].querySelectorAll('video').forEach(v=>{ if(v.paused && !v.ended) kick(v); });
+  }
+  document.addEventListener('visibilitychange',keepPlaying);
+  window.addEventListener('focus',keepPlaying);
+  setInterval(keepPlaying,800);
 })();
 // "We remember": 53,537 starts hidden, flickers on with the city lights, then stays when the city is dark.
 (function(){
@@ -803,7 +814,9 @@ const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\
     s.querySelectorAll('video').forEach(function(v){ if(v.preload!=='auto'){ v.preload='auto'; try{v.load();}catch(e){} } });}
   function go(c){ warm(c+1); warm(c+2); }
   window.addEventListener('slidechange',function(e){ go(e.detail); });
-  window.addEventListener('load',function(){ go(window.DECK?window.DECK.cur:0); });
+  // After the page has loaded, fetch every video, so a jump from the phone starts at once.
+  window.addEventListener('load',function(){ go(window.DECK?window.DECK.cur:0);
+    setTimeout(function(){ document.querySelectorAll('.slide').forEach(function(s,n){ warm(n); }); },1500); });
 })();
 </script>
 </body></html>
