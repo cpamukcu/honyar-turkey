@@ -154,6 +154,8 @@
 .slide.lead.active .ist .r2{animation-delay:calc(var(--lead) + 5s)}
 .slide.lead.active .ist .r3{animation-delay:calc(var(--lead) + 5.9s)}
 .slide.lead.active .src{animation:scrimin 1s ease both;animation-delay:calc(var(--lead) + .6s)}
+/* Slide 9: title first, then the room shakes, sparks and the fire start in clear view; the cards come after */
+.slide.lead.active[data-n="9"] .door5 .b,.slide.lead.active[data-n="9"] p.sub.b,.slide.lead.active[data-n="9"] p.cap.b{animation-delay:calc(var(--lead) + 5s + var(--i,0) * .2s + .3s)}
 @media (prefers-reduced-motion: reduce){.slide.lead.active .bgscrim,.slide.lead.active .scrim,.slide.lead.active .src{animation:none}}
 </style></head><body>
 <title>Building Safer Homes</title>
