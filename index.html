@@ -843,14 +843,36 @@ const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\
 <script src="remote-host.js"></script>
 <script>
 // Load the videos of the next two slides ahead of time, so later videos don't slow the start.
+// Then keep every video in memory (a blob), so playing or replaying a slide never waits for the network.
 (function(){
   function warm(n){var s=document.querySelectorAll('.slide')[n]; if(!s) return;
-    s.querySelectorAll('video').forEach(function(v){ if(v.preload!=='auto'){ v.preload='auto'; try{v.load();}catch(e){} } });}
+    s.querySelectorAll('video').forEach(function(v){ if(v.preload!=='auto' && !v.dataset.mem){ v.preload='auto'; try{v.load();}catch(e){} } });}
   function go(c){ warm(c+1); warm(c+2); }
   window.addEventListener('slidechange',function(e){ go(e.detail); });
-  // After the page has loaded, fetch every video, so a jump from the phone starts at once.
+  function isActive(v){ var s=v.closest('.slide'); return s && s.classList.contains('active'); }
+  function swap(v,url){
+    // The video on the slide being shown is left alone (no flicker); it switches to memory once you move on.
+    if(isActive(v)){
+      var later=function(){ if(isActive(v)) return; window.removeEventListener('slidechange',later); swap(v,url); };
+      window.addEventListener('slidechange',later); return;
+    }
+    v.dataset.mem='1'; v.preload='auto'; v.src=url;
+    try{ v.load(); }catch(e){}
+  }
+  function keep(list){
+    var i=0;
+    function next(){
+      var v=list[i++]; if(!v) return;
+      var src=v.currentSrc||v.getAttribute('src');
+      fetch(src,{mode:'cors'}).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+        .then(function(b){ swap(v,URL.createObjectURL(b)); })
+        .catch(function(){ v.preload='auto'; try{ if(!isActive(v)) v.load(); }catch(e){} })
+        .then(next);
+    }
+    next(); next();   // two at a time
+  }
   window.addEventListener('load',function(){ go(window.DECK?window.DECK.cur:0);
-    setTimeout(function(){ document.querySelectorAll('.slide').forEach(function(s,n){ warm(n); }); },1500); });
+    setTimeout(function(){ keep([].slice.call(document.querySelectorAll('video'))); },1500); });
 })();
 </script>
 </body></html>
