@@ -60,7 +60,9 @@ footer button:active{transform:scale(.97);opacity:.85}
 (function(){
   var N=TITLES.length, cur=0, lastState=0, links=[], room=(location.hash||'').replace('#','').toUpperCase();
   var $=function(id){return document.getElementById(id);};
-  var BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt'];
+  // broker-cn.emqx.io is inside mainland China (fast without a VPN); the other two are backups.
+  var BROKERS=['wss://broker-cn.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://broker.emqx.io:8084/mqtt'];
+  var lastTap=0;
   var nf=21; try{nf=parseInt(localStorage.getItem('honyarNf'),10)||21;}catch(e){}
   function setNf(v){nf=Math.max(15,Math.min(34,v));document.documentElement.style.setProperty('--nf',nf+'px');try{localStorage.setItem('honyarNf',nf);}catch(e){}}
   setNf(nf);
@@ -87,9 +89,10 @@ footer button:active{transform:scale(.97);opacity:.85}
     links.forEach(function(c){if(c.connected)c.publish('honyar-deck/v1/'+room+'/cmd',msg);});
   }
   function buzz(){try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
-  function go(i){i=Math.max(0,Math.min(N-1,i));cur=i;render();send('go',i);buzz();startTimer();}
-  $('nextBtn').onclick=function(){if(cur<N-1){cur++;render();} send('next');buzz();startTimer();};
-  $('prevBtn').onclick=function(){if(cur>0){cur--;render();} send('prev');buzz();};
+  // Always send the exact slide number, so fast taps can never skip or double up.
+  function go(i){i=Math.max(0,Math.min(N-1,i));cur=i;lastTap=Date.now();render();send('go',i);buzz();startTimer();}
+  $('nextBtn').onclick=function(){go(cur+1);};
+  $('prevBtn').onclick=function(){cur>0?go(cur-1):buzz();};
   $('aplus').onclick=function(){setNf(nf+2);};
   $('aminus').onclick=function(){setNf(nf-2);};
   $('listBtn').onclick=function(){$('list').hidden=false;var c=$('ol').querySelector('.cur');if(c)c.scrollIntoView({block:'center'});};
@@ -116,7 +119,7 @@ footer button:active{transform:scale(.97);opacity:.85}
         var c=mqtt.connect(url,{clientId:'phone_'+Math.random().toString(16).slice(2,10),reconnectPeriod:3000,connectTimeout:8000,keepalive:30});
         c.on('connect',function(){c.subscribe('honyar-deck/v1/'+room+'/state');send('hello');setStatus();});
         c.on('close',setStatus);c.on('error',function(){});
-        c.on('message',function(t,p){try{var m=JSON.parse(p.toString());if(typeof m.n==='number'&&m.t>=lastState){lastState=m.t;if(Date.now()-m.t<40000&&m.n!==cur){cur=m.n;render();}}}catch(e){}setStatus();});
+        c.on('message',function(t,p){try{var m=JSON.parse(p.toString());if(typeof m.n==='number'&&m.t>=lastState){lastState=m.t;if(Date.now()-m.t<40000&&m.n!==cur&&Date.now()-lastTap>3000){cur=m.n;render();}}}catch(e){}setStatus();});
         links.push(c);
       }catch(e){}
     });

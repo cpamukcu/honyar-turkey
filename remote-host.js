@@ -1,5 +1,5 @@
 // Phone remote, laptop side: shows a QR code and follows commands from remote.html.
-// Both sides talk through two public MQTT brokers at once, so one blocked broker is not a problem.
+// Both sides talk through three public MQTT brokers at once, so one blocked broker is not a problem.
 (function () {
   if (!window.DECK || !window.mqtt) return;
   var ALPH = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -11,7 +11,8 @@
     try { localStorage.setItem('honyarRoom', room); } catch (e) {}
   }
   var BASE = 'honyar-deck/v1/' + room + '/';
-  var BROKERS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt'];
+  // broker-cn.emqx.io is inside mainland China (fast without a VPN); the other two are backups.
+  var BROKERS = ['wss://broker-cn.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
   // From the offline copy (file://) the phone cannot open a local file, so use the live remote page.
   var remoteURL = (location.protocol === 'file:' ? 'https://cpamukcu.github.io/honyar-turkey/remote.html'
     : new URL('remote.html', location.href).href.split('#')[0]) + '#' + room;
