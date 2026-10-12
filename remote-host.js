@@ -34,16 +34,18 @@
     if (first && !ov.hidden) setTimeout(function () { ov.hidden = true; }, 1200);
     setStatus();
   }
+  function wire(c) {
+    c.on('connect', function () { c.subscribe(BASE + 'cmd'); publishState(); setStatus(); });
+    c.on('close', setStatus);
+    c.on('error', function () {});
+    c.on('message', function (t, p) { try { onCmd(JSON.parse(p.toString())); } catch (e) {} });
+    clients.push(c);
+  }
   BROKERS.forEach(function (url) {
-    try {
-      var c = mqtt.connect(url, { clientId: 'deck_' + room + '_' + Math.random().toString(16).slice(2, 8), reconnectPeriod: 3000, connectTimeout: 8000, keepalive: 30 });
-      c.on('connect', function () { c.subscribe(BASE + 'cmd'); publishState(); setStatus(); });
-      c.on('close', setStatus);
-      c.on('error', function () {});
-      c.on('message', function (t, p) { try { onCmd(JSON.parse(p.toString())); } catch (e) {} });
-      clients.push(c);
-    } catch (e) {}
+    try { wire(mqtt.connect(url, { clientId: 'deck_' + room + '_' + Math.random().toString(16).slice(2, 8), reconnectPeriod: 3000, connectTimeout: 8000, keepalive: 30 })); } catch (e) {}
   });
+  // Fourth route on the normal HTTPS port (vendor/ntfy-link.js), for networks that block the MQTT ports.
+  if (window.ntfyConnect && !window.HONYAR_LOCAL) { try { wire(ntfyConnect()); } catch (e) {} }
   window.addEventListener('slidechange', publishState);
   setInterval(publishState, 15000);
   setInterval(setStatus, 5000);
