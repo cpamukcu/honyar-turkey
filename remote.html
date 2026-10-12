@@ -130,6 +130,7 @@ footer button:active{transform:scale(.97);opacity:.85}
     setInterval(function(){send('ping');setStatus();},15000);
   }
   if(/^[A-Z0-9]{6}$/.test(room)) connect(); else $('join').hidden=false;
+  if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
   $('jf').onsubmit=function(e){e.preventDefault();var v=$('code').value.trim().toUpperCase();if(/^[A-Z0-9]{6}$/.test(v)){room=v;history.replaceState(null,'','#'+v);$('join').hidden=true;connect();}};
   setStatus();
 })();

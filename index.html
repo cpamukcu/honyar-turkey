@@ -840,6 +840,53 @@ const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\
 <script src="vendor/mqtt.min.js"></script><script src="vendor/ntfy-link.js"></script>
 <script src="remote-host.js"></script>
 <script>
+// If a picture fails to download (GitHub can be patchy in China), try again up to 3 times.
+(function(){
+  function again(el, src, n, apply){
+    if(n>3) return;
+    setTimeout(function(){
+      var im=new Image();
+      im.onload=function(){ apply(im.src); };
+      im.onerror=function(){ again(el, src, n+1, apply); };
+      im.src=src+(src.indexOf('?')<0?'?':'&')+'retry='+n;
+    }, 1000*n);
+  }
+  document.addEventListener('error', function(e){
+    var el=e.target;
+    if(el && el.tagName==='VIDEO' && !el.dataset.mem){            // a video failed before it was in memory: reload it
+      var n=+(el.dataset.tries||0); if(n>=3) return; el.dataset.tries=n+1;
+      setTimeout(function(){ try{ el.load(); var s=el.closest('.slide'); if(s && s.classList.contains('active')) el.play().catch(function(){}); }catch(x){} }, 1500*(n+1));
+      return;
+    }
+    if(!el || el.tagName!=='IMG' || el.hasAttribute('onerror') || el.dataset.retrying) return;
+    el.dataset.retrying='1';
+    var src=el.getAttribute('src'); if(!src) return;
+    again(el, src, 1, function(ok){ el.src=ok; });
+  }, true);
+  // Background pictures set in CSS: check each one and retry the same way.
+  window.addEventListener('load', function(){
+    document.querySelectorAll('[style*="background-image"]').forEach(function(el){
+      var m=/url\(["']?([^"')]+)["']?\)/.exec(el.style.backgroundImage); if(!m) return;
+      var src=m[1], im=new Image();
+      im.onerror=function(){ again(el, src, 1, function(ok){ el.style.backgroundImage='url("'+ok+'")'; }); };
+      im.src=src;
+    });
+  });
+})();
+// Register the offline memory (service worker) on the live site only.
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
+      // Ask the offline memory to save every picture, poster and video these slides use.
+      var urls={};
+      document.querySelectorAll('img[src],video[poster],video[src],[style*="background-image"],link[rel="icon"]').forEach(function(el){
+        [el.getAttribute('src'),el.getAttribute('poster'),el.getAttribute('href')].forEach(function(u){ if(u && !/^(blob|data):/.test(u)) urls[u]=1; });
+        var m=/url\(["']?([^"')]+)["']?\)/.exec(el.style && el.style.backgroundImage || ''); if(m) urls[m[1]]=1;
+      });
+      if(reg.active) reg.active.postMessage({cache:Object.keys(urls)});
+    }).catch(function(){});
+  });
+}
 // Load the videos of the next two slides ahead of time, so later videos don't slow the start.
 // Then keep every video in memory (a blob), so playing or replaying a slide never waits for the network.
 (function(){
@@ -862,8 +909,11 @@ const NOTES = ["\"Hello everyone, I'm Can. I'm doing a solo presentation today.\
     function next(){
       var v=list[i++]; if(!v) return;
       var src=v.currentSrc||v.getAttribute('src');
-      fetch(src,{mode:'cors'}).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
-        .then(function(b){ swap(v,URL.createObjectURL(b)); })
+      function get(tries){
+        return fetch(src,{mode:'cors'}).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+          .catch(function(){ if(tries<3) return new Promise(function(res){ setTimeout(res,1500*tries); }).then(function(){ return get(tries+1); }); throw 0; });
+      }
+      get(1).then(function(b){ swap(v,URL.createObjectURL(b)); })
         .catch(function(){ v.preload='auto'; try{ if(!isActive(v)) v.load(); }catch(e){} })
         .then(next);
     }
