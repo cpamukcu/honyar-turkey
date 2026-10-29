@@ -160,7 +160,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 02 professor's comments -->
-<section class="slide" aria-label="The professor's three comments. My three answers.">
+<section class="slide" data-tv="keys" aria-label="The professor's three comments. My three answers.">
   <img class="abs bgp" src="img/f_keys.jpg" alt="" style="object-position:center"><div class="abs bgs"></div>
   <p class="abs b kick" style="left:90px;top:56px">Since the mid-term</p>
   <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">The professor's three comments.<br><span class="grad">My three answers.</span></h2>
@@ -237,7 +237,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 09 channels -->
-<section class="slide" aria-label="From factory to home">
+<section class="slide" data-tv="counter" aria-label="From factory to home">
   <img class="abs bgp" src="img/f_dealer_counter.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Channels · Honyar's two questions</p>
   <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">From factory <span class="grad">to home.</span></h2>
@@ -313,7 +313,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 14 risks -->
-<section class="slide" aria-label="Risks. And my answers.">
+<section class="slide" data-tv="closing" aria-label="Risks. And my answers.">
   <p class="abs b kick" style="left:90px;top:56px">Risks</p>
   <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Risks. <span class="grad">And my answers.</span></h2>
   <div class="abs risks" style="left:90px;top:222px;width:1100px">
@@ -373,6 +373,8 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
     v.addEventListener('ended',finish);
     v.addEventListener('canplay',function(){v.play().catch(finish)},{once:true});
     setTimeout(function(){if(!done&&v.readyState<3){done=true;v.remove();busy=false;show(cur+1)}},2500);
+    // if the browser blocks the clip from starting, go on with a soft fade instead of waiting
+    setTimeout(function(){if(!done&&v.paused&&v.currentTime<0.2){done=true;v.remove();busy=false;show(cur+1)}},3000);
     st.appendChild(v);
   }
   function prev(){var t=document.getElementById('tv');if(t){t.remove();busy=false}show(cur-1)}
@@ -410,7 +412,7 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
 if('serviceWorker' in navigator && location.protocol==='https:'){
   addEventListener('load',function(){
     navigator.serviceWorker.register('sw.js').then(function(){return navigator.serviceWorker.ready}).then(function(reg){
-      var u={'media/tv2/t1.mp4':1};
+      var u={};document.querySelectorAll('[data-tv]').forEach(function(el){u['media/tv2/'+el.getAttribute('data-tv')+'.mp4']=1});
       document.querySelectorAll('img[src],link[rel="icon"]').forEach(function(el){[el.getAttribute('src'),el.getAttribute('href')].forEach(function(x){if(x&&!/^(blob|data):/.test(x))u[x]=1})});
       if(reg.active)reg.active.postMessage({cache:Object.keys(u)});
     }).catch(function(){});
