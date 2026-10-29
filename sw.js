@@ -3,8 +3,8 @@
 // - Pictures, videos, scripts, fonts: the saved copy first, else the network (then saved).
 // - Video range requests are left to the browser (the slides load videos into memory themselves).
 // A new VERSION (every publish) clears the old saved copies, so updates always arrive.
-const VERSION = 'hny-78276949a53b';
-const CORE = ['./', 'index.html', 'remote.html', 'practice.html', 'remote-host.js', 'remote-host.css',
+const VERSION = 'hny-final2-76fdc0dc';
+const CORE = ['./', 'index.html', 'remote.html', 'remote2.html', 'practice.html', 'remote-host.js', 'remote-host2.js', 'remote-host.css',
   'vendor/mqtt.min.js', 'vendor/ntfy-link.js', 'vendor/qrcode.js', 'vendor/inter/inter.css'];
 
 self.addEventListener('install', e => {
