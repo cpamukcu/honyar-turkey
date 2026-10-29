@@ -50,6 +50,10 @@ h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
 .comp .fct{font-size:14px;margin-top:10px;padding-top:10px}
 .glass.comp{height:310px}.glass.th{height:330px}.glass.q2{height:340px}.glass.grp{height:262px}.glass.step{height:300px}.glass.bm{height:300px}
 .chain{align-items:stretch!important}
+/* slide 7: the video is moved so the box sits on the right, clear of the cards */
+.bgp.vid7{transform-origin:0 0;transform:translate(-53px,-181px) scale(1.55)!important}
+.bgs.s7scrim,.slide.on .bgs.s7scrim{background:linear-gradient(90deg,rgba(4,6,13,.92) 0%,rgba(4,6,13,.82) 52%,rgba(4,6,13,.12) 70%,rgba(4,6,13,.04) 100%),linear-gradient(180deg,rgba(4,6,13,.4),rgba(4,6,13,.3))}
+.s7 .glass.q2{padding:24px 24px;height:auto;min-height:0}.s7 .q2 .v{font-size:40px;min-height:0}.s7 .q2 .t{font-size:17px;margin-top:12px}.s7 .q2 .fct{font-size:14px}.s7 .q2 .k{font-size:13px;padding-right:56px}
 .bgs.hv{background:linear-gradient(90deg,rgba(4,6,13,.78) 0%,rgba(4,6,13,.58) 50%,rgba(4,6,13,.36) 100%),linear-gradient(180deg,rgba(4,6,13,.20),rgba(4,6,13,.55))}
 .bgs{inset:0;background:linear-gradient(90deg,rgba(4,6,13,.80) 0%,rgba(4,6,13,.5) 45%,rgba(4,6,13,.18) 100%),linear-gradient(180deg,rgba(4,6,13,.15),rgba(4,6,13,.45))}
 .cover-img{right:0;top:0;width:760px;height:720px;object-fit:cover;object-position:62% 50%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 38%);mask-image:linear-gradient(90deg,transparent,#000 38%)}
@@ -245,18 +249,18 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 09 channels -->
-<section class="slide" aria-label="From factory to home">
-  <video class="abs bgp vid slidevid" src="media/v_counter.mp4" poster="img/f_dealer_counter.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs hv"></div>
+<section class="slide s7" aria-label="From factory to home">
+  <video class="abs bgp vid vid7 slidevid" src="media/v_counter.mp4" poster="img/f_dealer_counter.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs s7scrim"></div>
   <p class="abs b kick" style="left:90px;top:56px">Channels · Honyar's two questions</p>
   <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">From factory <span class="grad">to home.</span></h2>
   <div class="abs flow b" style="left:90px;top:196px;width:1100px;--i:1">
     <span>Honyar</span><i>→</i><span>Distributor</span><i>→</i><span>Wholesaler</span><i>→</i><span>Shop</span><i>→</i><span class="hl">Electrician</span><i>→</i><span>Family</span>
   </div>
-  <div class="abs grid2" style="left:90px;top:272px;width:1100px">
+  <div class="abs grid2" style="left:90px;top:262px;width:700px;gap:20px">
     <div class="glass q2 b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-clock"/></svg></span><p class="k">Pay only after it sells?</p><div class="v grad">2 to 3 months</div><p class="t">Not usually. Shops buy on credit. I would give free trial stock to a few dealers.</p><p class="fct">Makers give 60 to 120 days, secured by cheques, bank guarantees or credit insurance.</p></div>
     <div class="glass q2 b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-percent"/></svg></span><p class="k">How much do they add?</p><div class="v grad">20% and 30%</div><p class="t">Wholesalers about 20%. Shops about 30%. One clear price for every dealer.</p><p class="fct">Market range: wholesaler 15–30%, shop 25–40%. A Trendyol sale costs 15–20% commission.</p></div>
   </div>
-  <p class="abs b cap" style="left:90px;top:640px;--i:6">There are few public numbers. I would check them with dealers in Istanbul.</p>
+  <p class="abs b cap" style="left:90px;top:656px;--i:6">There are few public numbers. I would check them with dealers in Istanbul.</p>
   <p class="src">Sources: Sektörüm Dergisi (2026); Capital / Allianz Trade (2025); dealer price lists</p>
 </section>
 
