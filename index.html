@@ -13,16 +13,16 @@
 [hidden]{display:none!important}
 html,body{height:100%;background:#000;color:var(--fg);font-family:var(--font);-webkit-font-smoothing:antialiased;overflow:hidden}
 #stage{position:fixed;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;overflow:hidden;background:var(--bg)}
-.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .8s ease,visibility 0s linear .8s;overflow:hidden;
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transform:scale(1.015);transition:opacity .8s ease,transform 1.2s cubic-bezier(.16,1,.3,1),visibility 0s linear .8s;overflow:hidden;
  background:radial-gradient(900px 500px at 78% 8%,rgba(74,163,255,.22),transparent 60%),radial-gradient(700px 500px at 8% 100%,rgba(139,123,255,.20),transparent 60%),var(--bg)}
-.slide.on{opacity:1;visibility:visible;transition:opacity .8s ease}
-.glass{background:var(--glass);border:1px solid var(--edge);border-radius:28px;backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.28)}
+.slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .8s ease,transform 1.2s cubic-bezier(.16,1,.3,1)}
+.glass{position:relative;overflow:hidden;background:var(--glass);border:1px solid var(--edge);border-radius:28px;backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.28)}
 .abs{position:absolute}
 .grad{background:linear-gradient(90deg,var(--blue),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
 .kick{font-size:14px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
 h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
-.sub{font-size:30px;font-weight:600;letter-spacing:-.02em}
-.cap{font-size:18px;color:var(--mut)}
+.sub{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.cap{font-size:17px;color:var(--mut)}
 .src{position:absolute;left:90px;bottom:22px;font-size:12px;color:rgba(235,240,255,.4);max-width:1000px}
 .b{opacity:0;transform:translateY(34px) scale(.975);transition:opacity 1s cubic-bezier(.22,.8,.2,1),transform 1.15s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--d,0s) + var(--i,0)*.13s + .15s)}
 /* photo slides: the photo is seen alone for about a second, then the scrim and the info come in */
@@ -48,18 +48,18 @@ h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
 .fct{font-size:15px;line-height:1.35;color:var(--fg);opacity:.82;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.16);text-align:left}
 .node .fct{font-size:14px;margin-top:12px;padding-top:10px}
 .comp .fct{font-size:14px;margin-top:10px;padding-top:10px}
-.glass.comp{height:310px}.glass.th{height:330px}.glass.q2{height:340px}.glass.grp{height:262px}.glass.step{height:300px}.glass.bm{height:300px}
+.glass.comp{height:300px}.glass.th{height:300px}.glass.q2{height:340px}.glass.grp{height:262px}.glass.step{height:300px}.glass.bm{height:300px}
 .chain{align-items:stretch!important}
 /* slide 7: the video is moved so the box sits on the right, clear of the cards */
 .bgp.vid7{transform-origin:0 0;transform:translate(-53px,-181px) scale(1.55)!important}
 .bgs.s7scrim,.slide.on .bgs.s7scrim{background:linear-gradient(90deg,rgba(4,6,13,.92) 0%,rgba(4,6,13,.82) 52%,rgba(4,6,13,.12) 70%,rgba(4,6,13,.04) 100%),linear-gradient(180deg,rgba(4,6,13,.4),rgba(4,6,13,.3))}
-.s7 .glass.q2{padding:24px 24px;height:auto;min-height:0}.s7 .q2 .v{font-size:40px;min-height:0}.s7 .q2 .t{font-size:17px;margin-top:12px}.s7 .q2 .fct{font-size:14px}.s7 .q2 .k{font-size:13px;padding-right:56px}
+.s7 .glass.q2{padding:24px 24px;height:auto;min-height:0}.s7 .q2 .v{font-size:36px;min-height:0}.s7 .q2 .t{font-size:17px;margin-top:12px}.s7 .q2 .fct{font-size:14px}.s7 .q2 .k{font-size:13px;padding-right:56px}
 .bgs.hv{background:linear-gradient(90deg,rgba(4,6,13,.78) 0%,rgba(4,6,13,.58) 50%,rgba(4,6,13,.36) 100%),linear-gradient(180deg,rgba(4,6,13,.20),rgba(4,6,13,.55))}
 .bgs{inset:0;background:linear-gradient(90deg,rgba(4,6,13,.80) 0%,rgba(4,6,13,.5) 45%,rgba(4,6,13,.18) 100%),linear-gradient(180deg,rgba(4,6,13,.15),rgba(4,6,13,.45))}
 .cover-img{right:0;top:0;width:760px;height:720px;object-fit:cover;object-position:62% 50%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 38%);mask-image:linear-gradient(90deg,transparent,#000 38%)}
 .credit{padding:16px 22px;border-left:3px solid var(--blue);background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0))}
-.credit .c1{font-size:22px;font-weight:600}.credit .c2{font-size:17px;color:var(--mut);margin-top:4px}
-.pill{display:inline-flex;gap:10px;align-items:center;padding:12px 22px;border-radius:999px;font-size:17px;color:var(--mut)}
+.credit .c1{font-size:20px;font-weight:600}.credit .c2{font-size:15px;color:var(--mut);margin-top:4px}
+.pill{display:inline-flex;gap:10px;align-items:center;padding:12px 24px;border-radius:999px;font-size:20px;color:var(--mut)}
 .pill i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
 .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
@@ -69,19 +69,19 @@ h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
 .fb{display:grid;grid-template-columns:1fr 380px;align-items:center;padding:20px 30px;border-radius:24px;gap:24px}
 .fb .q{display:flex;gap:20px;align-items:center}
 .fb .no{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:20px;color:var(--cyan);border:1px solid rgba(99,230,255,.5);background:rgba(99,230,255,.08)}
-.fb .qt{font-size:23px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
-.fb .did{font-size:16px;color:var(--mut);margin-top:6px}
+.fb .qt{font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.fb .did{font-size:15px;color:var(--mut);margin-top:6px}
 .fb .ans{border-left:1px solid var(--edge);padding-left:26px}
-.fb .ans b{display:block;font-size:34px;letter-spacing:-.03em;line-height:1.1}
-.fb .ans span{display:block;font-size:17px;color:var(--mut);margin-top:6px}
+.fb .ans b{display:block;font-size:28px;letter-spacing:-.03em;line-height:1.1}
+.fb .ans span{display:block;font-size:15px;color:var(--mut);margin-top:6px}
 /* stat cards, slide 3 */
 .stat{padding:34px 26px;height:200px}
 .stat .v{min-height:88px;font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
 .stat .t{font-size:19px;color:var(--mut);margin-top:14px;line-height:1.3}
 /* competition, slide 4 */
 .comp{padding:24px 20px;height:220px;border-radius:24px}
-.comp .ln{font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
-.comp .ld{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-top:14px}
+.comp .ln{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.comp .ld{font-size:21px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-top:14px;height:2.4em}
 .comp .st{position:absolute;left:20px;bottom:22px;font-size:16px;font-weight:600}
 .comp{position:relative}.comp .no{color:#ff8a80}.comp .ok{color:#7ee787}
 /* kit cards, slide 5 */
@@ -93,61 +93,78 @@ h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
 .tags{display:flex;gap:8px;margin-top:14px}
 .tags span{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);padding:5px 12px;border-radius:999px;border:1px solid rgba(99,230,255,.4)}
 /* strategy */
-.th{padding:34px 32px;height:300px}
+.th{padding:30px 30px;height:300px}
 .th .no{font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--cyan)}
-.th .big{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1.08;margin-top:18px}
-.th .sm{font-size:20px;color:var(--mut);margin-top:16px;line-height:1.35}
+.th .big{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-top:16px;height:2.2em}
+.th .sm{font-size:17px;color:var(--mut);margin-top:16px;line-height:1.35}
 /* chain, slide 7 */
 .chain{display:flex;align-items:center;gap:10px}
 .chain .node{flex:1;padding:26px 20px;border-radius:24px;text-align:center}
 .chain .node.hi{border-color:rgba(99,230,255,.55);background:linear-gradient(145deg,rgba(74,163,255,.28),rgba(74,163,255,.06))}
-.chain .nn{font-size:28px;font-weight:700;letter-spacing:-.02em}.chain .nd{font-size:17px;color:var(--mut);margin-top:6px}
-.chev{flex:none;width:26px;height:26px;fill:none;stroke:var(--mut);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chain .nn{font-size:23px;font-weight:700;letter-spacing:-.02em}.chain .nd{font-size:15px;color:var(--mut);margin-top:6px}
+.chev{flex:none;align-self:center;width:30px;height:30px;fill:none;stroke:var(--cyan);stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(99,230,255,.6));stroke-linecap:round;stroke-linejoin:round}
 .row4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.mini{padding:16px 22px;border-radius:999px;font-size:21px;font-weight:600;display:flex;align-items:center;gap:12px}
+.mini{padding:14px 20px;border-radius:999px;font-size:18px;font-weight:600;display:flex;align-items:center;gap:12px}
 .mini b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:15px;color:var(--cyan);border:1px solid rgba(99,230,255,.5)}
 /* price */
-.scale{left:90px;top:318px;width:1100px;height:180px}
+.scale{left:90px;top:262px;width:1100px;height:180px}
 .track{position:absolute;left:0;right:0;top:92px;height:6px;border-radius:6px;background:rgba(255,255,255,.14)}
-.fill{position:absolute;left:0;top:92px;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 18px rgba(99,230,255,.6)}
-.pt{position:absolute;top:0;transform:translateX(-50%);text-align:center}
-.pt .n{font-size:42px;font-weight:700;letter-spacing:-.03em}.pt .l{font-size:18px;color:var(--mut);margin-top:4px}
-.pt .dot{position:absolute;left:50%;top:86px;transform:translateX(-50%);width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.12)}
-.pt.hero .n{font-size:72px;margin-top:-18px}
-.pt.hero .dot{top:82px;width:26px;height:26px;background:var(--cyan);box-shadow:0 0 0 8px rgba(99,230,255,.2),0 0 40px var(--cyan)}
-.chip{padding:22px 28px;border-radius:24px}.chip .v{font-size:40px;font-weight:700;letter-spacing:-.03em}.chip .t{font-size:17px;color:var(--mut);margin-top:4px}
+.fill{position:absolute;left:0;top:92px;height:6px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 18px rgba(99,230,255,.6);transform-origin:left;transform:scaleX(0);transition:transform 1.4s cubic-bezier(.16,1,.3,1) .7s}
+.on .fill{transform:none}
+.pt{position:absolute;transform:translateX(-50%);text-align:center;white-space:nowrap}
+.pt .n{font-size:32px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.pt .l{font-size:16px;color:var(--mut);margin-top:2px}
+.pt .dot{position:absolute;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.12)}
+.pt.lo{top:120px}.pt.lo .dot{top:-34px}
+.pt.hero{top:0}.pt.hero .l{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin:0 0 2px}
+.pt.hero .n{font-size:54px;line-height:1}
+.pt.hero .dot{top:82px;width:26px;height:26px;margin-left:-13px;background:var(--cyan);box-shadow:0 0 0 8px rgba(99,230,255,.2),0 0 40px var(--cyan)}
+.chip{padding:22px 28px;border-radius:24px}.chip .v{font-size:32px;font-weight:700;letter-spacing:-.03em}.chip .t{font-size:16px;color:var(--mut);margin-top:4px}
 /* channels */
 .flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.flow span{padding:12px 18px;border-radius:999px;font-size:19px;font-weight:600;border:1px solid var(--edge);background:rgba(255,255,255,.06)}
+.flow span{padding:10px 18px;border-radius:999px;font-size:17px;font-weight:600;border:1px solid var(--edge);background:rgba(255,255,255,.06)}
 .flow span.hl{border-color:rgba(99,230,255,.6);background:rgba(99,230,255,.12);color:var(--cyan)}
 .flow i{font-style:normal;color:var(--mut);font-size:20px}
 .q2{padding:34px 34px;height:270px}
 .q2 .k{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
-.q2 .v{font-size:58px;font-weight:700;letter-spacing:-.035em;margin-top:14px;line-height:1.05}
-.q2 .t{font-size:20px;color:var(--mut);margin-top:16px;line-height:1.4}
+.q2 .v{font-size:44px;font-weight:700;letter-spacing:-.035em;margin-top:14px;line-height:1.05}
+.q2 .t{font-size:18px;color:var(--mut);margin-top:16px;line-height:1.4}
 /* brand */
 .grp{padding:28px 24px;height:190px}
 .grp .who{font-size:15px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
-.grp .need{font-size:38px;font-weight:700;letter-spacing:-.03em;margin-top:12px;line-height:1.1}
-.grp .how{font-size:18px;color:var(--mut);margin-top:14px}
+.grp .need{font-size:30px;font-weight:700;letter-spacing:-.03em;margin-top:12px;line-height:1.1}
+.grp .how{font-size:16px;color:var(--mut);margin-top:14px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;border-top:1px solid var(--edge);padding-top:26px}
-.kpis b{display:block;font-size:44px;font-weight:700;letter-spacing:-.03em}
-.kpis span{display:block;font-size:17px;color:var(--mut);margin-top:6px}
+.kpis b{display:block;font-size:36px;font-weight:700;letter-spacing:-.03em}
+.kpis span{display:block;font-size:15px;color:var(--mut);margin-top:6px}
 /* steps (promotion, entry) */
 .step{padding:32px 30px;height:250px}
 .step .when{font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
-.step .what{font-size:44px;font-weight:700;letter-spacing:-.03em;margin-top:12px}
-.step .det{font-size:19px;color:var(--mut);margin-top:14px;line-height:1.4}
+.step .what{font-size:34px;font-weight:700;letter-spacing:-.03em;margin-top:12px}
+.step .det{font-size:17px;color:var(--mut);margin-top:14px;line-height:1.4}
 .step.hi{border-color:rgba(99,230,255,.55);background:linear-gradient(145deg,rgba(74,163,255,.28),rgba(74,163,255,.06))}
 /* business model */
 .bm{padding:30px 24px;height:210px}
-.bm .k{font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--cyan)}
-.bm .t{font-size:19px;color:var(--fg);margin-top:14px;line-height:1.4;opacity:.85}
+.bm .k{font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--cyan)}
+.bm .t{font-size:17px;color:var(--fg);margin-top:14px;line-height:1.4;opacity:.85}
 /* risks */
 .risks{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .rk{padding:20px 28px;border-radius:22px}
-.rk .r{font-size:23px;font-weight:700;letter-spacing:-.015em}
-.rk .a{font-size:18px;color:var(--cyan);margin-top:6px}
+.rk .r{font-size:20px;font-weight:700;letter-spacing:-.015em}
+.rk .a{font-size:16px;color:var(--cyan);margin-top:6px}
+/* entrances, the same on every slide:
+   text comes into focus, the blue line shines once, cards rise and a light passes over them, icons pop */
+.kick.b,h1.b,h2.b,.sub.b,.cap.b,.credit.b{filter:blur(10px);transition-property:opacity,transform,filter;transition-duration:1s,1.15s,1s}
+.on .kick.b,.on h1.b,.on h2.b,.on .sub.b,.on .cap.b,.on .credit.b{filter:blur(0)}
+.grad{background-image:linear-gradient(90deg,var(--blue),var(--cyan) 40%,#fff 50%,var(--cyan) 60%,var(--blue));background-size:250% 100%;background-position:0 0}
+.on h1 .grad,.on h2 .grad{animation:shine 2.2s ease-in-out calc(var(--d,0s) + .9s) both}
+@keyframes shine{from{background-position:100% 0}to{background-position:0 0}}
+.glass.b::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);transform:translateX(-130%)}
+.on .glass.b::after{animation:sheen 1.3s ease calc(var(--d,0s) + var(--i,0)*.13s + .9s) both}
+@keyframes sheen{to{transform:translateX(130%)}}
+.on .b .ib{animation:pop .7s cubic-bezier(.34,1.56,.64,1) calc(var(--d,0s) + var(--i,0)*.13s + .55s) both}
+@keyframes pop{from{scale:.4;opacity:0}to{scale:1;opacity:1}}
+.chev.b{transform:translateX(-14px)}.on .chev.b{transform:none}
+.on .pt .dot{animation:pop .6s cubic-bezier(.34,1.56,.64,1) calc(var(--d,0s) + 1.1s) both}
 #bar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:999px;background:rgba(20,22,30,.7);border:1px solid var(--edge);backdrop-filter:blur(18px);z-index:20;font:13px var(--font);color:var(--mut);opacity:.0;transition:opacity .3s}
 body.ui #bar{opacity:1}
 #bar button{font:inherit;color:inherit;background:none;border:0;padding:7px 12px;border-radius:999px;cursor:pointer}
@@ -167,16 +184,16 @@ body.ui #bar{opacity:1}
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
-  <h1 class="abs b" style="left:72px;top:210px;width:640px;font-size:92px;--i:1">Building<br>Safer Homes,<br><span class="grad">Together.</span></h1>
-  <div class="abs b credit" style="left:72px;top:540px;--i:3"><p class="c1">Honyar in Turkey · The marketing plan</p><p class="c2">Can Pamukcu &nbsp;·&nbsp; 2 November 2026</p></div>
+  <h1 class="abs b" style="left:72px;top:228px;width:640px;font-size:72px;--i:1">Building<br>Safer Homes,<br><span class="grad">Together.</span></h1>
+  <div class="abs b credit" style="left:72px;top:500px;--i:3"><p class="c1">Honyar in Turkey · The marketing plan</p><p class="c2">Can Pamukcu &nbsp;·&nbsp; 2 November 2026</p></div>
 </section>
 
 <!-- 02 professor's comments -->
 <section class="slide" aria-label="The professor's three comments. My three answers.">
   <video class="abs bgp vid slidevid" src="media/v_keys.mp4" poster="img/f_keys.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs"></div>
   <p class="abs b kick" style="left:90px;top:56px">Since the mid-term</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">The professor's three comments.<br><span class="grad">My three answers.</span></h2>
-  <div class="abs" style="left:90px;top:250px;width:1100px;display:grid;gap:16px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">The professor's three comments.<br><span class="grad">My three answers.</span></h2>
+  <div class="abs" style="left:90px;top:232px;width:1100px;display:grid;gap:16px">
     <div class="glass fb b" style="--i:1"><div class="q"><span class="no">1</span><div><p class="qt">“New homes are built after the quake. Is the need already solved?”</p><p class="did">I checked quake homes: socket fires in Birecik, 3-day blackouts in Hatay.</p></div></div><div class="ans"><b class="grad">Only partly.</b><span>Istanbul still waits for its quake. About 1.5 million old homes are not renewed.</span></div></div>
     <div class="glass fb b" style="--i:2"><div class="q"><span class="no">2</span><div><p class="qt">“Do French brands sell earthquake-safe home products?”</p><p class="did">I searched Schneider, Legrand, Netatmo and Viko. Only small Turkish firms sell building-level cut-offs, for 6,000 to 10,500 lira.</p></div></div><div class="ans"><b class="grad">No.</b><span>Normal parts, yes. Earthquake-safe for the home, no.</span></div></div>
     <div class="glass fb b" style="--i:3"><div class="q"><span class="no">3</span><div><p class="qt">“Do the huge new buildings need these products?”</p><p class="did">I read the fire rule (BYKHY). Smoke detection inside flats is required only above 51.5 m.</p></div></div><div class="ans"><b class="grad">The flats do.</b><span>Towers are covered. Normal flats are not.</span></div></div>
@@ -187,63 +204,63 @@ body.ui #bar{opacity:1}
 <section class="slide" aria-label="Every line has a leader. The safe flat has none.">
   <img class="abs bgp" src="img/f_shop_shelf.jpg" alt="" style="object-position:center"><div class="abs bgs"></div>
   <p class="abs b kick" style="left:90px;top:56px">The competition</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Every line has a leader.<br><span class="grad">The safe flat has none.</span></h2>
-  <div class="abs grid5" style="left:90px;top:270px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Every line has a leader.<br><span class="grad">The safe flat has none.</span></h2>
+  <div class="abs grid5" style="left:90px;top:232px;width:1100px">
     <div class="glass comp b" style="--i:1"><span class="ib sm"><svg class="ic"><use href="#i-switch"/></svg></span><p class="ln">Switches</p><p class="ld">Viko</p><p class="fct">A Viko switch costs from about 90 lira.</p><p class="st no">Too crowded</p></div>
     <div class="glass comp b" style="--i:2"><span class="ib sm"><svg class="ic"><use href="#i-breaker"/></svg></span><p class="ln">Breakers</p><p class="ld">Schneider<br>ABB</p><p class="fct">A 4-pole safety breaker: Schneider 1,350–1,650 lira, ABB 1,800–2,550.</p><p class="st no">Strong rivals</p></div>
     <div class="glass comp b" style="--i:3"><span class="ib sm"><svg class="ic"><use href="#i-bulb"/></svg></span><p class="ln">Lighting</p><p class="ld">China<br>half of imports</p><p class="fct">Chinese goods: 96% of LED lamp imports (older data).</p><p class="st no">A price fight</p></div>
     <div class="glass comp b" style="--i:4"><span class="ib sm"><svg class="ic"><use href="#i-drop"/></svg></span><p class="ln">Pipes</p><p class="ld">Fırat<br>Kalde</p><p class="fct">A 20 mm pipe elbow: Kalde 135 lira, Fırat 170.</p><p class="st no">Local favourites</p></div>
     <div class="glass comp b" style="--i:5"><span class="ib sm"><svg class="ic"><use href="#i-wifi"/></svg></span><p class="ln">Smart home</p><p class="ld">Xiaomi</p><p class="fct">Full smart-home setups reach under 10% of homes.</p><p class="st ok">A partner</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:612px;font-size:26px;color:var(--fg);--i:7;border-color:rgba(99,230,255,.5)"><i></i>One safety kit for one flat? <b class="grad" style="margin-left:6px">Nobody sells it.</b></div>
+  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:7;border-color:rgba(99,230,255,.5)"><i></i>One safety kit for one flat? <b class="grad" style="margin-left:6px">Nobody sells it.</b></div>
   <p class="src">Sources: brand websites; import data (lighting, older data); Trendyol and dealer lists (2026)</p>
 </section>
 
 <!-- 06 strategy -->
 <section class="slide" aria-label="Don't fight the leaders. Start where they aren't.">
-  <p class="abs b kick" style="left:90px;top:64px">Strategy · three ideas from the course</p>
-  <h2 class="abs b" style="left:90px;top:96px;font-size:68px;--i:0">Don't fight the leaders.<br><span class="grad">Start where they aren't.</span></h2>
-  <div class="abs grid3" style="left:90px;top:272px;width:1100px">
+  <p class="abs b kick" style="left:90px;top:56px">Strategy · three ideas from the course</p>
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Don't fight the leaders.<br><span class="grad">Start where they aren't.</span></h2>
+  <div class="abs grid3" style="left:90px;top:232px;width:1100px">
     <div class="glass th b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-target"/></svg></span><div class="no">01 · LECTURE 2</div><div class="big">Niche<br>first mover</div><div class="sm">Lead a small market first.</div><p class="fct">Honyar's niche: the normal flat under 21.5 m, where the law asks for little.</p></div>
     <div class="glass th b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-tag"/></svg></span><div class="no">02 · HBR</div><div class="big">Good enough<br>for emerging markets</div><div class="sm">Low price. Easy to buy.</div><p class="fct">About 2,500–5,000 lira for a flat set (my estimate), below the 6,000-lira building units.</p></div>
     <div class="glass th b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-stairs"/></svg></span><div class="no" style="color:var(--amber)">03 · NINTENDO CASE</div><div class="big">Disruptive<br>entry</div><div class="sm">Start at the bottom. Move up.</div><p class="fct">Nintendo's Wii won with a simpler, cheaper product. Honyar does the same for normal flats.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:638px;font-size:22px;color:var(--fg);--i:6"><i></i>A follower in switches. <b style="margin-left:6px" class="grad">A leader in this niche.</b></div>
+  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i>A follower in switches. <b style="margin-left:6px" class="grad">A leader in this niche.</b></div>
 </section>
 
 <!-- 07 who buys -->
 <section class="slide" aria-label="Who buys it. Who picks it.">
   <img class="abs bgp" src="img/f_site_meeting.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Target customers</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Who buys it.<br><span class="grad">Who picks it.</span></h2>
-  <div class="abs chain" style="left:90px;top:244px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Who buys it.<br><span class="grad">Who picks it.</span></h2>
+  <div class="abs chain" style="left:90px;top:232px;width:1100px">
     <div class="glass node b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-building"/></svg></span><p class="nn">Developer</p><p class="nd">Sets the rules</p><p class="fct">Emlak Konut tenders: big contractors buy the electrics centrally.</p></div><svg class="chev b" viewBox="0 0 24 24" style="--i:1"><path d="M9 6l6 6-6 6"/></svg>
     <div class="glass node hi b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-hardhat"/></svg></span><p class="nn">Builder</p><p class="nd">Picks the brand</p><p class="fct">One lump-sum bid covers all materials, so price decides.</p></div><svg class="chev b" viewBox="0 0 24 24" style="--i:2"><path d="M9 6l6 6-6 6"/></svg>
     <div class="glass node b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-clipboard"/></svg></span><p class="nn">Specifier</p><p class="nd">Approves it</p><p class="fct">The consultant approves about 3 equal options, with samples.</p></div><svg class="chev b" viewBox="0 0 24 24" style="--i:3"><path d="M9 6l6 6-6 6"/></svg>
     <div class="glass node hi b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-bolt"/></svg></span><p class="nn">Electrician</p><p class="nd">Fits it</p><p class="fct">Schneider pays points worth up to about 4%.</p></div>
   </div>
-  <p class="abs b kick" style="left:90px;top:520px;--i:5">Who Honyar sells to, in order</p>
-  <div class="abs row4" style="left:90px;top:552px;width:1100px">
+  <p class="abs b kick" style="left:90px;top:500px;--i:5">Who Honyar sells to, in order</p>
+  <div class="abs row4" style="left:90px;top:530px;width:1100px">
     <div class="glass mini b" style="--i:5"><b>1</b>Builders</div><div class="glass mini b" style="--i:6"><b>2</b>Electricians</div><div class="glass mini b" style="--i:7"><b>3</b>Hotels</div><div class="glass mini b" style="--i:8"><b>4</b>TOKİ, later</div>
   </div>
-  <p class="abs b sub" style="left:90px;top:640px;--i:9">Families live in it. <span class="grad">These four decide.</span></p>
+  <p class="abs b sub" style="left:90px;top:616px;--i:9">Families live in it. <span class="grad">These four decide.</span></p>
 </section>
 
 <!-- 08 pricing -->
 <section class="slide" aria-label="Pricing">
-  <p class="abs b kick" style="left:90px;top:64px">Pricing</p>
-  <h2 class="abs b" style="left:90px;top:96px;font-size:68px;--i:0">Less than Schneider.<br><span class="grad">Safer than Viko.</span></h2>
-  <p class="abs b kick" style="left:90px;top:278px;--i:2">4-pole safety breaker (40 A, 30 mA) · shop price in lira</p>
+  <p class="abs b kick" style="left:90px;top:56px">Pricing</p>
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Less than Schneider.<br><span class="grad">Safer than Viko.</span></h2>
+  <p class="abs b kick" style="left:90px;top:232px;--i:1">4-pole safety breaker (40 A, 30 mA) · shop price in lira</p>
   <div class="abs scale b" style="--i:2">
-    <div class="track"></div><div class="fill" style="width:16.7%"></div>
-    <div class="pt" style="left:3.3%;margin-left:-16px"><div class="n">1,060</div><div class="l">Viko</div><div class="dot"></div></div>
-    <div class="pt hero" style="left:16.7%"><div class="n grad">1,100</div><div class="dot"></div></div>
-    <div class="pt" style="left:100%;margin-left:-70px"><div class="n">1,350</div><div class="l">Schneider</div><div class="dot"></div></div>
+    <div class="track"></div><div class="fill" style="width:25%"></div>
+    <div class="pt lo" style="left:15%"><div class="dot"></div><div class="n cu">1,060</div><div class="l">Viko</div></div>
+    <div class="pt hero" style="left:25%"><div class="l">Honyar</div><div class="n grad cu">1,100</div><div class="dot"></div></div>
+    <div class="pt lo" style="left:87.5%"><div class="dot"></div><div class="n cu">1,350</div><div class="l">Schneider</div></div>
   </div>
-  <div class="abs grid3" style="left:90px;top:478px;width:1100px;gap:22px">
-    <div class="glass chip b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-tag"/></svg></span><div class="v grad">15% less</div><div class="t">The whole kit vs. parts</div><p class="fct">Smart smoke alarm, leak sensor and hub cost over 6,000 lira apart.</p></div>
+  <div class="abs grid3" style="left:90px;top:456px;width:1100px;gap:22px">
+    <div class="glass chip b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-tag"/></svg></span><div class="v grad cu">15% less</div><div class="t">The whole kit vs. parts</div><p class="fct">Smart smoke alarm, leak sensor and hub cost over 6,000 lira apart.</p></div>
     <div class="glass chip b" style="--i:5"><span class="ib"><svg class="ic"><use href="#i-layers"/></svg></span><div class="v">2×</div><div class="t">Factory price to shelf price</div><p class="fct">Dealers get 40–60% off list. Shelf price is 1.6 to 2.0 times Honyar's net price.</p></div>
-    <div class="glass chip b" style="--i:6"><span class="ib"><svg class="ic"><use href="#i-trendup"/></svg></span><div class="v" style="color:var(--amber)">+30% a year</div><div class="t">So Honyar prices in euros</div><p class="fct">Inflation forecast for end-2026: 28%.</p></div>
+    <div class="glass chip b" style="--i:6"><span class="ib"><svg class="ic"><use href="#i-trendup"/></svg></span><div class="v cu" style="color:var(--amber)">+30% a year</div><div class="t">So Honyar prices in euros</div><p class="fct">Inflation forecast for end-2026: 28%.</p></div>
   </div>
   <p class="src">Honyar's price is my plan. Viko and Schneider: lowest shop prices for a 4-pole 40 A 30 mA breaker, 2026 (Akakçe).</p>
 </section>
@@ -252,7 +269,7 @@ body.ui #bar{opacity:1}
 <section class="slide s7" aria-label="From factory to home">
   <video class="abs bgp vid vid7 slidevid" src="media/v_counter.mp4" poster="img/f_dealer_counter.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs s7scrim"></div>
   <p class="abs b kick" style="left:90px;top:56px">Channels · Honyar's two questions</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">From factory <span class="grad">to home.</span></h2>
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">From factory <span class="grad">to home.</span></h2>
   <div class="abs flow b" style="left:90px;top:196px;width:1100px;--i:1">
     <span>Honyar</span><i>→</i><span>Distributor</span><i>→</i><span>Wholesaler</span><i>→</i><span>Shop</span><i>→</i><span class="hl">Electrician</span><i>→</i><span>Family</span>
   </div>
@@ -268,18 +285,18 @@ body.ui #bar{opacity:1}
 <section class="slide" aria-label="One promise: the safe home inside">
   <img class="abs bgp" src="img/f_showroom.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Brand plan · first 12 months</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">One promise:<br><span class="grad">the safe home inside.</span></h2>
-  <div class="abs grid4" style="left:90px;top:262px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">One promise:<br><span class="grad">the safe home inside.</span></h2>
+  <div class="abs grid4" style="left:90px;top:232px;width:1100px">
     <div class="glass grp b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-home"/></svg></span><p class="who">Families</p><p class="need grad">Trust</p><p class="how">5-year warranty</p><p class="fct">Seen first in a showroom in Istanbul's electrical market.</p></div>
     <div class="glass grp b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-truck"/></svg></span><p class="who">Distributors</p><p class="need grad">Easy to sell</p><p class="how">Free trial stock</p><p class="fct">Then 60–90 days credit, backed by a bank guarantee.</p></div>
     <div class="glass grp b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-hardhat"/></svg></span><p class="who">Builders</p><p class="need grad">Proof</p><p class="how">3 test projects</p><p class="fct">With private and urban-renewal builders.</p></div>
     <div class="glass grp b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-file"/></svg></span><p class="who">Specifiers</p><p class="need grad">Papers</p><p class="how">CE and TSE files</p><p class="fct">Cables need an EN 50575 fire class. A seismic cut-off needs TS 12884.</p></div>
   </div>
-  <div class="abs kpis b" style="left:90px;top:552px;width:1100px;--i:6">
+  <div class="abs kpis b" style="left:90px;top:536px;width:1100px;--i:6">
     <div><b class="grad">Month 3</b><span>Papers and a partner</span></div>
     <div><b class="grad">Month 6</b><span>3 test projects</span></div>
-    <div><b class="grad">50</b><span>dealers by month 12</span></div>
-    <div><b class="grad">5,000</b><span>flats by month 12</span></div>
+    <div><b class="grad cu">50</b><span>dealers by month 12</span></div>
+    <div><b class="grad cu">5,000</b><span>flats by month 12</span></div>
   </div>
   <p class="src">These targets are my plan. A specifier is the engineer who designs and approves a building's parts.</p>
 </section>
@@ -287,26 +304,26 @@ body.ui #bar{opacity:1}
 <!-- 11 promotion -->
 <section class="slide" aria-label="One campaign. Four lines.">
   <p class="abs b kick" style="left:90px;top:56px">Promotion</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">One campaign.<br><span class="grad">Four lines.</span></h2>
-  <div class="abs grid3" style="left:90px;top:262px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">One campaign.<br><span class="grad">Four lines.</span></h2>
+  <div class="abs grid3" style="left:90px;top:232px;width:1100px">
     <div class="glass step b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-megaphone"/></svg></span><p class="when">Months 0–3</p><p class="what">Launch</p><p class="det">A stand at Istanbul's big electrical fair. A showroom.</p><p class="fct">Free display boards and trial stock at a few anchor dealers.</p></div>
     <div class="glass step b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-play"/></svg></span><p class="when">Months 3–6</p><p class="what">Prove</p><p class="det">Short videos of fire and leak tests, shared by electricians.</p><p class="fct">Tests copy real cases: socket fires like Birecik, leaks like Hatay.</p></div>
     <div class="glass step hi b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-trendup"/></svg></span><p class="when">Months 6–12</p><p class="what">Grow</p><p class="det">An earthquake drill day with schools. The kit in 2 hotels.</p><p class="fct">Timed near 6 February, the earthquake anniversary.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:612px;font-size:22px;color:var(--fg);--i:6"><i></i>Every message shows the whole kit. <b class="grad" style="margin-left:6px">So all four lines grow together.</b></div>
+  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i>Every message shows the whole kit. <b class="grad" style="margin-left:6px">So all four lines grow together.</b></div>
 </section>
 
 <!-- 12 business model -->
 <section class="slide" aria-label="Honyar sells a safe flat, not parts.">
   <p class="abs b kick" style="left:90px;top:56px">Business model · the four parts</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Honyar sells a safe flat,<br><span class="grad">not parts.</span></h2>
-  <div class="abs grid4" style="left:90px;top:262px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Honyar sells a safe flat,<br><span class="grad">not parts.</span></h2>
+  <div class="abs grid4" style="left:90px;top:232px;width:1100px">
     <div class="glass bm b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-gem"/></svg></span><p class="k">Value</p><p class="t">A safe flat at one price, from one brand</p><p class="fct">The kit costs 15% less than the parts, with one warranty.</p></div>
     <div class="glass bm b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-box"/></svg></span><p class="k">Resources</p><p class="t">4 product lines, 40 years, Xiaomi's app</p><p class="fct">Honyar already makes fire-resistant cable and smoke sensors.</p></div>
     <div class="glass bm b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-gear"/></svg></span><p class="k">Processes</p><p class="t">Train electricians. Sell to builders. Build locally.</p><p class="fct">A reward at least equal to Schneider's 4%. A master distributor with project staff.</p></div>
     <div class="glass bm b" style="--i:4"><span class="ib"><svg class="ic"><use href="#i-coin"/></svg></span><p class="k">Earnings</p><p class="t">A price per flat, plus shop sales</p><p class="fct">Each 30 days of credit costs about 3% of the invoice.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:610px;font-size:22px;color:var(--fg);--i:6"><i></i><b class="grad" style="margin-right:6px">Open innovation:</b> Xiaomi's app, a Turkish factory, Turkish dealers.</div>
+  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i><b class="grad" style="margin-right:6px">Open innovation:</b> Xiaomi's app, a Turkish factory, Turkish dealers.</div>
   <p class="src">Course: Lecture 2 (four parts of a business model; open innovation)</p>
 </section>
 
@@ -314,21 +331,21 @@ body.ui #bar{opacity:1}
 <section class="slide" aria-label="Partner first. Then build.">
   <img class="abs bgp" src="img/f_factory.jpg" alt="" style="object-position:center"><div class="abs bgs"></div>
   <p class="abs b kick" style="left:90px;top:56px">Entry plan</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Partner first.<br><span class="grad">Then build.</span></h2>
-  <div class="abs grid3" style="left:90px;top:262px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Partner first.<br><span class="grad">Then build.</span></h2>
+  <div class="abs grid3" style="left:90px;top:232px;width:1100px">
     <div class="glass step hi b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-plane"/></svg></span><p class="when">Year 1</p><p class="what">Export</p><p class="det">Sell with a Turkish partner.</p><p class="fct">Chinese switches pay 0% extra duty, breakers 5%.</p></div>
     <div class="glass step b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-link"/></svg></span><p class="when">Year 2</p><p class="what">Joint venture</p><p class="det">Make it in Turkey, with more than half local parts.</p><p class="fct">51% local content earns a domestic-goods certificate: up to 15% price edge in public tenders.</p></div>
     <div class="glass step b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-coin"/></svg></span><p class="when">Year 3</p><p class="what">Scale</p><p class="det">TOKİ's public homes. Then Europe.</p><p class="fct">TOKİ plans 500,000 social homes. First deliveries: March 2027.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:612px;font-size:22px;color:var(--fg);--i:6"><i style="background:var(--amber);box-shadow:0 0 14px var(--amber)"></i><b style="margin-right:6px;color:var(--amber)">Like Tesla in Shanghai:</b> build locally, win the government's support.</div>
+  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i style="background:var(--amber);box-shadow:0 0 14px var(--amber)"></i><b style="margin-right:6px;color:var(--amber)">Like Tesla in Shanghai:</b> build locally, win the government's support.</div>
   <p class="src">Sources: Lecture 1 (entry modes); Tesla Gigafactory Shanghai case; Public Procurement Law 4734 Art. 63</p>
 </section>
 
 <!-- 14 risks -->
 <section class="slide" aria-label="Risks. And Honyar's answers.">
   <p class="abs b kick" style="left:90px;top:56px">Risks</p>
-  <h2 class="abs b" style="left:90px;top:86px;font-size:60px;--i:0">Risks. <span class="grad">And Honyar's answers.</span></h2>
-  <div class="abs risks" style="left:90px;top:222px;width:1100px">
+  <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Risks. <span class="grad">And Honyar's answers.</span></h2>
+  <div class="abs risks" style="left:90px;top:232px;width:1100px">
     <div class="glass rk b" style="--i:1"><span class="ib"><svg class="ic"><use href="#i-trenddown"/></svg></span><p class="r">The lira moves fast</p><p class="a">Price in euros. Revise the list every quarter.</p></div>
     <div class="glass rk b" style="--i:2"><span class="ib"><svg class="ic"><use href="#i-copy"/></svg></span><p class="r">Viko copies Honyar</p><p class="a">Its owner Panasonic already sells a seismic breaker abroad. Move first.</p></div>
     <div class="glass rk b" style="--i:3"><span class="ib"><svg class="ic"><use href="#i-file"/></svg></span><p class="r">Papers take time</p><p class="a">CE, TSE and TS 12884 files. Start now.</p></div>
@@ -336,7 +353,7 @@ body.ui #bar{opacity:1}
     <div class="glass rk b" style="--i:5"><span class="ib"><svg class="ic"><use href="#i-clock"/></svg></span><p class="r">Late payments</p><p class="a">Terms run 60 to 120 days. Insure the credit.</p></div>
     <div class="glass rk b" style="--i:6"><span class="ib"><svg class="ic"><use href="#i-home"/></svg></span><p class="r">Families don't buy safety alone</p><p class="a">Sell it inside the home price</p></div>
   </div>
-  <p class="abs b cap" style="left:90px;top:640px;--i:8">Even the compulsory earthquake insurance covers only about 56 in 100 homes.</p>
+  <p class="abs b cap" style="left:90px;top:604px;--i:8">Even the compulsory earthquake insurance covers only about 56 in 100 homes.</p>
   <p class="src">Source: DASK coverage, 56.3% of dwellings (CNBC-e)</p>
 </section>
 
@@ -346,9 +363,9 @@ body.ui #bar{opacity:1}
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
-  <p class="abs b sub" style="left:72px;top:160px;width:560px;font-size:26px;font-weight:500;line-height:1.3;--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
-  <h2 class="abs b" style="left:72px;top:272px;width:640px;font-size:88px;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
-  <p class="abs b cap" style="left:72px;top:620px;--i:4">Thank you. &nbsp;<b>Questions?</b></p>
+  <p class="abs b sub" style="left:72px;top:170px;width:560px;font-size:24px;font-weight:500;line-height:1.3;--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
+  <h2 class="abs b" style="left:72px;top:262px;width:640px;font-size:70px;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
+  <p class="abs b cap" style="left:72px;top:540px;--i:4">Thank you. &nbsp;<b>Questions?</b></p>
 </section>
 
 </div></main>
@@ -416,6 +433,14 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
   // a slide's own video plays by itself each time the slide is shown (muted); other slides' videos stop
   addEventListener('slidechange',function(){S.forEach(function(sl,i){sl.querySelectorAll('video.slidevid').forEach(function(v){if(i===cur){try{v.currentTime=0}catch(x){}var p=v.play();if(p&&p.catch)p.catch(function(){})}else{v.pause()}})})});
   S.forEach(function(sl){if(sl.querySelector('video.slidevid'))sl.classList.add('pv')});
+  // numbers marked .cu count up when their slide is shown
+  addEventListener('slidechange',function(){S[cur].querySelectorAll('.cu').forEach(function(el){
+    var t=el._t||(el._t=el.textContent),m=t.match(/\d[\d,]*/);if(!m)return;
+    var goal=+m[0].replace(/,/g,''),i=+(getComputedStyle(el.closest('.b')||el).getPropertyValue('--i')||0),t0=null;
+    el.textContent=t.replace(m[0],'0');
+    setTimeout(function(){requestAnimationFrame(function f(ts){t0=t0||ts;var k=Math.min(1,(ts-t0)/1200),e=1-Math.pow(1-k,3);
+      el.textContent=t.replace(m[0],Math.round(goal*e).toLocaleString('en-US'));if(k<1)requestAnimationFrame(f)})},350+i*130);
+  })});
   if(/[?&]bare/.test(location.search))document.body.classList.add('bare');
   show((parseInt(location.hash.slice(2))||1)-1);
 })();
