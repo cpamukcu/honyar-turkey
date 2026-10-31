@@ -467,7 +467,19 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
   [].forEach.call(document.images,function(im){if(im.decode)im.decode().catch(function(){})});
   S.forEach(function(sl){var n=sl.getAttribute('data-tv');if(n){var w=document.createElement('video');w.preload='auto';w.muted=true;w.src='media/tv2/'+n+'.mp4';w.load();window['_tv_'+n]=w}});
   // a slide's own video plays by itself each time the slide is shown (muted); other slides' videos stop
-  addEventListener('slidechange',function(){S.forEach(function(sl,i){sl.querySelectorAll('video.slidevid').forEach(function(v){if(i===cur){try{v.currentTime=0}catch(x){}v.playbackRate=+(v.dataset.rate||1);var p=v.play();if(p&&p.catch)p.catch(function(){})}else{v.pause()}})})});
+  // Safari is strict with videos: keep them muted and inline, try again when the video is ready,
+  // and on the first click or key press start every video once, so later slide changes (also from the phone) may play them.
+  var vids=[].slice.call(document.querySelectorAll('video.slidevid'));
+  vids.forEach(function(v){v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','')});
+  function mine(v){return S[cur].contains(v)}
+  function go(v){if(!mine(v)||!v.paused||v.ended)return;v.playbackRate=+(v.dataset.rate||1);var p=v.play();if(p&&p.catch)p.catch(function(){})}
+  addEventListener('slidechange',function(){vids.forEach(function(v){
+    if(mine(v)){try{v.currentTime=0}catch(x){}go(v);v.addEventListener('canplay',function(){go(v)},{once:true});
+      setTimeout(function(){go(v)},600);setTimeout(function(){go(v)},1600)}
+    else v.pause()})});
+  function unlock(){removeEventListener('pointerdown',unlock,true);removeEventListener('keydown',unlock,true);removeEventListener('touchstart',unlock,true);
+    vids.forEach(function(v){if(mine(v))return;var p=v.play();if(p&&p.then)p.then(function(){if(!mine(v)){v.pause();try{v.currentTime=0}catch(x){}}}).catch(function(){})})}
+  addEventListener('pointerdown',unlock,true);addEventListener('keydown',unlock,true);addEventListener('touchstart',unlock,true);
   S.forEach(function(sl){if(sl.querySelector('video.slidevid'))sl.classList.add('pv')});
   // numbers marked .cu count up when their slide is shown
   addEventListener('slidechange',function(){S[cur].querySelectorAll('.cu').forEach(function(el){
