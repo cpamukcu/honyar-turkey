@@ -229,10 +229,12 @@ body.ui #bar{opacity:1}
 .s1.on #coverVideo{width:940px;--mk:34%;transition:width 1.7s cubic-bezier(.65,0,.35,1) 2s,--mk 1.7s cubic-bezier(.65,0,.35,1) 2s}
 /* slide 7 -> 8: the clip starts in the socket's frame on the right, then opens to full screen */
 #tv{--mk:0%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--mk));mask-image:linear-gradient(90deg,transparent,#000 var(--mk))}
-/* last slide: the still last frame of the clip before it, full screen, then it glides right like the cover */
-.slide.s13{--d:2.5s}
-.s13 .endimg{right:0;top:0;width:1280px;height:720px;object-fit:cover;object-position:50% 50%;--mk:0%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--mk));mask-image:linear-gradient(90deg,transparent,#000 var(--mk));transition:none}
-.s13.on .endimg{width:940px;--mk:34%;transition:width 1.7s cubic-bezier(.65,0,.35,1) .9s,--mk 1.7s cubic-bezier(.65,0,.35,1) .9s}
+/* last slide: the still last frame of the clip before it, full screen */
+.slide.s13{--d:1.5s}
+.s13 .endimg{left:0;top:0;width:1280px;height:720px;object-fit:cover;object-position:50% 50%}
+/* the frame stays still and full screen; a soft shade comes in on the left with the text */
+.s13scrim{left:0;top:0;width:1280px;height:720px;background:linear-gradient(90deg,rgba(4,6,13,.9) 0%,rgba(4,6,13,.72) 34%,rgba(4,6,13,.15) 62%,rgba(4,6,13,0) 80%);opacity:0;transition:opacity .2s}
+.s13.on .s13scrim{opacity:1;transition:opacity 1.4s ease .8s}
 /* before Start: the cover video's first frame, still and full screen, nothing else (Start is on the phone; Space or → also start) */
 #startOv{position:absolute;inset:0;z-index:15;background:#000 url(img/f_cover_first.jpg) center/cover no-repeat;transition:opacity .45s ease}
 #startOv[hidden]{display:none}#startOv.go{opacity:0;pointer-events:none}
@@ -426,7 +428,7 @@ body.ui #bar{opacity:1}
 
 <!-- 15 closing -->
 <section class="slide s13" aria-label="Let's build them safer, together">
-  <img class="abs endimg" src="img/f_t12_end.jpg" alt="">
+  <img class="abs endimg" src="img/f_t12_end.jpg" alt=""><div class="abs s13scrim"></div>
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
