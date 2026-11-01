@@ -203,6 +203,7 @@ body.ui #bar{opacity:1}
 #bar .ct{padding:0 8px;font-variant-numeric:tabular-nums}
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;padding:18px 28px 70px;background:rgba(6,8,14,.94);border-top:1px solid var(--edge);z-index:15;font-size:18px;line-height:1.5;white-space:pre-wrap}
 #notes .lbl{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.slide.on.leaving .b,.slide.on.leaving .src{opacity:0;transform:none;transition:opacity .4s ease;transition-delay:0s}
 .bare .b,.bare .src,.bare #bar{opacity:0!important;transition:none!important}
 .bare .slide,.bare .slide.on{transition:none!important}
 #tv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:9;opacity:0;transition:opacity .6s}
@@ -220,7 +221,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 02 professor's comments -->
-<section class="slide fast" aria-label="The professor's three comments. My three answers.">
+<section class="slide fast" data-tv="t2" aria-label="The professor's three comments. My three answers.">
   <img class="abs bgp vid" src="img/f_t1_end.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Since the mid-term</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">The professor's three comments.<br><span class="grad">My three answers.</span></h2>
@@ -248,7 +249,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 06 strategy -->
-<section class="slide airy" aria-label="Don't fight the leaders. Start where they aren't.">
+<section class="slide airy" data-tv="t4" aria-label="Don't fight the leaders. Start where they aren't.">
   <img class="abs bgp" src="img/f_istanbul_growth.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Strategy · three ideas from the course</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Don't fight the leaders.<br><span class="grad">Start where they aren't.</span></h2>
@@ -335,7 +336,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 11 promotion -->
-<section class="slide airy" aria-label="One campaign. Four lines.">
+<section class="slide airy" data-tv="t9" aria-label="One campaign. Four lines.">
   <video class="abs bgp vid slidevid" src="media/f_test_lab.mp4" poster="img/f_test_lab.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Promotion</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">One campaign.<br><span class="grad">Four lines.</span></h2>
@@ -377,7 +378,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 14 risks -->
-<section class="slide slow airy s12" aria-label="Risks. And Honyar's answers.">
+<section class="slide slow airy s12" data-tv="t12" aria-label="Risks. And Honyar's answers.">
   <video class="abs bgp vid slidevid" data-rate="0.6" src="media/f_city_blue.mp4" poster="img/f_city_blue_first.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs low"></div>
   <p class="abs b kick" style="left:90px;top:56px">Risks</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Risks. <span class="grad">And Honyar's answers.</span></h2>
@@ -408,13 +409,14 @@ body.ui #bar{opacity:1}
 <div id="notes" hidden><span class="lbl">Speaker notes</span><span id="notesText"></span></div>
 <div id="bar"><button id="prevB" aria-label="Previous">←</button><span class="ct" id="ct"></span><button id="nextB" aria-label="Next">→</button><button id="notesB">Notes</button><button id="fsB">Full screen</button></div>
 <script>
-const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems in Turkish homes.\n• Today, I'll show you the marketing plan: how Honyar sells all four lines in Turkey.\n(CLICK · video)", "After the mid-term, the professor asked me three questions. Here's what I found.\n• First: new homes were built after the quake. Is the problem solved? Only partly. Istanbul still waits for its quake, and about 1.5 million old homes are not renewed.\n• Second: do French brands sell earthquake-safe home products? No. Schneider and Legrand sell normal breakers and alarms. Nothing for an earthquake inside the flat.\n• Third: do big new buildings need these systems? Yes, but the law already covers the towers. Normal flats get almost nothing. That's the gap.", "Now, the competition. Every product line already has a strong leader.\n• Switches: the market is too competitive.\n• Breakers: Schneider and ABB are very strong.\n• Lighting: a price fight with China.\n• Pipes: local brands like Fırat and Kalde.\n• Smart home: Xiaomi is a partner, not a rival.\n• So Honyar can't win line by line. But nobody sells one safety kit for one flat. That's Honyar's place.", "So how can Honyar win? I used three ideas from the course.\n• First, niche first mover. Don't fight the leaders in switches. Lead the normal flat, where the law asks for little.\n• Second, good enough for emerging markets. One simple kit, at a price families can pay.\n• Third, disruptive entry, like Nintendo's Wii. Simpler and cheaper. Start with normal flats, then move up to bigger buildings.\n• So Honyar is a follower in switches, but a leader in this niche.", "So who buys the kit, and who picks the brand? Four people decide.\n• The developer sets the rules.\n• The builder picks the brand, mostly on price.\n• The engineer approves it, and the electrician fits it.\n• So Honyar should sell to builders first, then electricians, then hotels.\n• In my mid-term, I put TOKİ first. But the builder picks the brand, not TOKİ. So TOKİ comes later.", "Now, price. My idea: Honyar should be cheaper than Schneider, safer than Viko.\n• Same breaker in the shop: Viko about 1,060 lira, Schneider about 1,350. Honyar, about 1,100.\n• The full kit is 15 percent cheaper than buying the parts one by one.\n• Prices in Turkey go up about 30 percent a year, so Honyar should price in euros.\n• Honyar's price is my plan. The others are real shop prices.", "Honyar asked me two questions about shops.\n• First: do shops pay only after they sell? Not usually. They buy on credit and pay in two to three months. But Honyar is new, so Honyar should give free trial stock to a few dealers.\n• Second: how much do they add? Wholesalers about 20 percent, shops about 30.\n• There aren't many public numbers, so Honyar should check them with dealers in Istanbul.", "Now, the brand. One promise: the safe home inside.\n• Families need trust, so a five-year warranty.\n• Distributors need it easy to sell, so free trial stock.\n• Builders need proof, so three test projects.\n• Engineers need papers, so CE and TSE files.\n• Honyar's target for the first year: 50 dealers and 5,000 flats.", "How do people hear about it? One campaign for all four lines.\n• First three months: launch, with a stand at Istanbul's big electrical fair.\n• Next three months: prove it, with short fire and leak test videos, shared by electricians.\n• Then grow: an earthquake drill day with schools, near the 6 February anniversary.\n• Every message shows the whole kit, so all four lines grow together.", "How does Honyar make money? From class, a business model has four parts.\n• Value: a safe flat, at one price.\n• Resources: four product lines, forty years, and Xiaomi's app.\n• Processes: train electricians, sell to builders, build locally.\n• Earnings: a price per flat, plus shop sales.\n• And partners fill what Honyar doesn't have. That's open innovation.", "So how does Honyar enter? Partner first, then build.\n• Year one: export, and sell with a Turkish partner. In my mid-term I said the import tax was high. I checked again: switches pay almost none. So exporting works.\n• Year two: a joint venture with a Turkish factory, using more than half local parts. That gives Honyar an edge in public tenders.\n• Year three: TOKİ's public homes, and then Europe.\n• It's like Tesla in Shanghai: build locally, and win the government's support.", "Of course, there are risks.\n• The lira moves fast, so Honyar should price in euros.\n• Viko could copy Honyar, so Honyar has to move first.\n• Electricians like old brands, so Honyar should give training and a good reward.\n• And families don't buy safety on their own. Even earthquake insurance covers only about half of homes. So Honyar sells safety inside the price of the home.", "So, to finish.\n• Turkey made the walls strong. Honyar can make the home safe.\n• Let's build them safer, together.\n• Thank you. I'm happy to take your questions."];
+const NOTES = ["Slide 1 · 20 s · clock 0:20\nHi everyone, I'm Can.\n• Last time, I showed you the problems in Turkish homes.\n• Today, I'll show you the marketing plan: how Honyar sells all four lines in Turkey.\n[CLICK · video 6 s] But first: after my mid-term, the professor asked me three questions.", "Slide 2 · 45 s · clock 1:05\nHere's what I found.\n• First: new homes were built after the quake. Is the problem solved? Only partly. Istanbul still waits for its quake, and about 1.5 million old homes are not renewed.\n• Second: do French brands sell earthquake-safe home products? No. Schneider and Legrand sell normal breakers and alarms. Nothing for an earthquake inside the flat.\n• Third: do big new buildings need these systems? Yes, but the law already covers the towers. Normal flats get almost nothing. That's the gap.\n[CLICK · video 8 s] So who already sells in this market?", "Slide 3 · 25 s · clock 1:30\nEvery product line already has a strong leader.\n• Switches: the market is too competitive.\n• Breakers: Schneider and ABB are very strong.\n• Lighting: a price fight with China.\n• Pipes: local brands like Fırat and Kalde.\n• Smart home: Xiaomi is a partner, not a rival.\n• So Honyar can't win line by line. But nobody sells one safety kit for one flat. That's Honyar's place.", "Slide 4 · 45 s · clock 2:15\nSo how can Honyar win? I used three ideas from the course.\n• First, niche first mover. Don't fight the leaders in switches. Lead the normal flat, where the law asks for little.\n• Second, good enough for emerging markets. One simple kit, at a price families can pay.\n• Third, disruptive entry, like Nintendo's Wii. Simpler and cheaper. Start with normal flats, then move up to bigger buildings.\n• So Honyar is a follower in switches, but a leader in this niche.\n[CLICK · video 11 s] And inside these new buildings, who actually picks the brand?", "Slide 5 · 20 s · clock 2:35\nFour people decide.\n• The developer sets the rules.\n• The builder picks the brand, mostly on price.\n• The engineer approves it, and the electrician fits it.\n• So Honyar should sell to builders first, then electricians, then hotels.\n• In my mid-term, I put TOKİ first. But the builder picks the brand, not TOKİ. So TOKİ comes later.", "Slide 6 · 30 s · clock 3:05\nNow, price. My idea: Honyar should be cheaper than Schneider, safer than Viko.\n• Same breaker in the shop: Viko about 1,060 lira, Schneider about 1,350. Honyar, about 1,100.\n• The full kit is 15 percent cheaper than buying the parts one by one.\n• Prices in Turkey go up about 30 percent a year, so Honyar should price in euros.\n• Honyar's price is my plan. The others are real shop prices.", "Slide 7 · 30 s · clock 3:35\nHonyar asked me two questions about shops.\n• First: do shops pay only after they sell? Not usually. They buy on credit and pay in two to three months. But Honyar is new, so Honyar should give free trial stock to a few dealers.\n• Second: how much do they add? Wholesalers about 20 percent, shops about 30.\n• There aren't many public numbers, so Honyar should check them with dealers in Istanbul.", "Slide 8 · 20 s · clock 3:55\nNow, the brand. One promise: the safe home inside.\n• Families need trust, so a five-year warranty.\n• Distributors need it easy to sell, so free trial stock.\n• Builders need proof, so three test projects.\n• Engineers need papers, so CE and TSE files.\n• Honyar's target for the first year: 50 dealers and 5,000 flats.", "Slide 9 · 40 s · clock 4:35\nHow do people hear about it? One campaign for all four lines.\n• First three months: launch, with a stand at Istanbul's big electrical fair.\n• Next three months: prove it, with short fire and leak test videos, shared by electricians.\n• Then grow: an earthquake drill day with schools, near the 6 February anniversary.\n• Every message shows the whole kit, so all four lines grow together.\n[CLICK · video 8 s] And what does Honyar really sell? Not parts. A safe flat.", "Slide 10 · 20 s · clock 4:55\nFrom class, a business model has four parts.\n• Value: a safe flat, at one price.\n• Resources: four product lines, forty years, and Xiaomi's app.\n• Processes: train electricians, sell to builders, build locally.\n• Earnings: a price per flat, plus shop sales.\n• And partners fill what Honyar doesn't have. That's open innovation.", "Slide 11 · 30 s · clock 5:25\nSo how does Honyar enter? Partner first, then build.\n• Year one: export, and sell with a Turkish partner. In my mid-term I said the import tax was high. I checked again: switches pay almost none. So exporting works.\n• Year two: a joint venture with a Turkish factory, using more than half local parts. That gives Honyar an edge in public tenders.\n• Year three: TOKİ's public homes, and then Europe.\n• It's like Tesla in Shanghai: build locally, and win the government's support.", "Slide 12 · 40 s · clock 6:05\nOf course, there are risks.\n• The lira moves fast, so Honyar should price in euros.\n• Viko could copy Honyar, so Honyar has to move first.\n• Electricians like old brands, so Honyar should give training and a good reward.\n• And families don't buy safety on their own. Even earthquake insurance covers only about half of homes. So Honyar sells safety inside the price of the home.\n[CLICK · video 8 s] Because in the end, it's about one family, in one home.", "Slide 13 · 10 s · clock 6:15\n• Turkey made the walls strong. Honyar can make the home safe.\n• Let's build them safer, together.\n• Thank you. I'm happy to take your questions."];
 (function(){
   var st=document.getElementById('stage'),S=[].slice.call(document.querySelectorAll('.slide')),N=S.length,cur=0,busy=false;
   function fit(){var s=Math.min(innerWidth/1280,innerHeight/720);st.style.transform='translate(-50%,-50%) scale('+s+')'}
   addEventListener('resize',fit);fit();
   function show(n){
     cur=Math.max(0,Math.min(N-1,n));
+    S.forEach(function(e){e.classList.remove('leaving')});
     S.forEach(function(e,i){e.classList.toggle('on',i===cur)});
     document.getElementById('ct').textContent=(cur+1)+' / '+N;
     document.getElementById('notesText').textContent=NOTES[cur]||'';
@@ -422,16 +424,22 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
     window.dispatchEvent(new Event('slidechange'));
   }
   // Video transition: if media/tv/<name>.mp4 exists, play it between the two slides; if not, a soft fade.
+  // a click while a clip plays skips it: the next slide comes at once (its picture is the clip's last frame), so you never wait
+  var skip=null;
   function next(){
-    if(busy||cur>=N-1)return;
+    if(busy){if(skip)skip();return}
+    if(cur>=N-1)return;
     var name=S[cur].getAttribute('data-tv');
     if(!name){show(cur+1);return}
     busy=true;
+    // like the AI Bridge deck: the text leaves first, then the clip plays over the slide's own picture
+    var from=S[cur];from.classList.add('leaving');
     var v=document.createElement('video');v.id='tv';v.muted=true;v.playsInline=true;v.src='media/tv2/'+name+'.mp4';
-    var done=false;
+    var done=false,t0=Date.now();
+    skip=function(){if(done||Date.now()-t0<700)return;done=true;skip=null;advance();v.style.transition='opacity .6s ease';v.style.opacity=0;setTimeout(function(){v.pause();v.remove();busy=false},650)};
     // the next slide starts under the last 1.3 s of the clip, and the clip fades out at once, so its words come in while the clip still moves
     var adv=false;function advance(){if(!adv){adv=true;show(cur+1);v.style.transition='opacity 1.1s ease';v.style.opacity=0}}
-    function finish(){if(done)return;done=true;advance();v.style.opacity=0;setTimeout(function(){v.remove();busy=false},700)}
+    function finish(){if(done)return;done=true;skip=null;advance();v.style.opacity=0;setTimeout(function(){v.remove();busy=false},700)}
     v.addEventListener('timeupdate',function(){if(v.duration&&v.duration-v.currentTime<1.3)advance()});
     v.addEventListener('error',function(){if(!done){done=true;v.remove();busy=false;show(cur+1)}});
     v.addEventListener('playing',function(){v.style.opacity=1});
@@ -440,7 +448,7 @@ const NOTES = ["Hi everyone, I'm Can.\n• Last time, I showed you the problems 
     setTimeout(function(){if(!done&&v.readyState<3){done=true;v.remove();busy=false;show(cur+1)}},2500);
     // if the browser blocks the clip from starting, go on with a soft fade instead of waiting
     setTimeout(function(){if(!done&&v.paused&&v.currentTime<0.2){done=true;v.remove();busy=false;show(cur+1)}},3000);
-    st.appendChild(v);
+    setTimeout(function(){if(!done)st.appendChild(v)},450);
   }
   function prev(){var t=document.getElementById('tv');if(t){t.remove();busy=false}show(cur-1)}
   window.DECK={show:function(n){if(n===cur+1)return next();var t=document.getElementById('tv');if(t){t.remove();busy=false}show(n)},next:next,prev:prev,N:N,get cur(){return cur}};
