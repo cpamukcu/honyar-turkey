@@ -3,7 +3,7 @@
 // - Pictures, videos, scripts, fonts: the saved copy first, else the network (then saved).
 // - Video range requests: answered from the saved copy when there is one (so clips play on bad wifi), else the network.
 // A new VERSION (every publish) clears the old saved copies, so updates always arrive.
-const VERSION = 'hny-final4-11020023';
+const VERSION = 'hny-final4-11020025';
 const CORE = ['./', 'index.html', 'remote.html', 'remote2.html', 'practice.html', 'remote-host.js', 'remote-host2.js', 'remote-host.css',
   'vendor/mqtt.min.js', 'vendor/ntfy-link.js', 'vendor/qrcode.js', 'vendor/inter/inter.css'];
 
