@@ -47,7 +47,8 @@
   });
   // Fourth route on the normal HTTPS port (vendor/ntfy-link.js), for networks that block the MQTT ports.
   if (window.ntfyConnect && !window.HONYAR_LOCAL) { try { wire(ntfyConnect()); } catch (e) {} }
-  window.addEventListener('slidechange', publishState);
+  // send each slide change three times (now, after 1 s, after 3 s), so one lost message on bad Wi-Fi can't leave the phone behind
+  window.addEventListener('slidechange', function () { publishState(); setTimeout(publishState, 1000); setTimeout(publishState, 3000); });
   // tell the phone when a video starts and ends, so it shows 'Video playing' and keeps this slide's notes
   var lastTv = false;
   setInterval(function () { var t = !!DECK.tv; if (t !== lastTv) { lastTv = t; publishState(); } }, 200);

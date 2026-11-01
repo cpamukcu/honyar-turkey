@@ -104,7 +104,8 @@ footer button:active{transform:scale(.97);opacity:.85}
   function hasClip(i){return /\n\[CLICK/.test(NOTES[i]||'');}
   function setPlaying(on){playing=on;if(on)playT=Date.now();var b=$('nextBtn');if(!b)return;b.textContent=on?'Video playing\u2026':deckStarted===false?'Start \u203A':'Next \u203A';b.classList.toggle('busy',on);$('notes').classList.toggle('playing',on);
     if(on){var c=$('notes').querySelector('.nl-click');if(c)c.scrollIntoView({block:'start',behavior:'smooth'});}}
-  setInterval(function(){if(playing&&Date.now()-playT>16000)setPlaying(false);},1000);
+  // a clip is at most 11 s: after 12 s ask the laptop where it is (a lost message on bad Wi-Fi), after 16 s give up waiting
+  setInterval(function(){if(!playing)return;var w=Date.now()-playT;if(w>12000&&w<13100)send('hello');if(w>16000)setPlaying(false);},1000);
   function go(i){i=Math.max(0,Math.min(N-1,i));cur=i;lastTap=Date.now();render();send('go',i);buzz();startTimer();}
   $('nextBtn').onclick=function(){
     if(playing){buzz();return;}                       // a second tap never cuts the video
