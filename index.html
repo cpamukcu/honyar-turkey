@@ -36,6 +36,8 @@ h1,h2{font-weight:700;letter-spacing:-.035em;line-height:1.03}
 .slide.fast.on .bgs{transition:opacity .9s ease}
 .slide .bgp{transform:scale(1.07);transition:transform 10s cubic-bezier(.2,.6,.2,1)}
 .slide.on .bgp{transform:scale(1)}
+/* a slide reached through a clip: its photo is already at the clip's last-frame size, so no slow zoom (it would jump 7%) */
+.slide.viaTv .bgp{transform:none!important;transition:none!important}
 .on .b{opacity:1;transform:none}
 .bgp{left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:.95}
 /* icon badges on glass cards */
@@ -213,15 +215,33 @@ body.ui #bar{opacity:1}
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:38vh;overflow:auto;padding:18px 28px 70px;background:rgba(6,8,14,.94);border-top:1px solid var(--edge);z-index:15;font-size:18px;line-height:1.5;white-space:pre-wrap}
 #notes .lbl{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
 .slide.on.leaving .b,.slide.on.leaving .src{opacity:0;transform:none;transition:opacity .4s ease;transition-delay:0s}
+/* the shade over the photo leaves with the text, so the photo is as bright as the clip's first frame when the clip comes in */
+.slide.on.leaving .bgs{opacity:0;transition:opacity .45s ease;transition-delay:0s}.slide.on.leaving .bgp{opacity:1;transition:opacity .45s ease}
 .bare .b,.bare .src,.bare #bar{opacity:0!important;transition:none!important}
 .bare .slide,.bare .slide.on{transition:none!important}
 #tv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:9;opacity:0;transition:opacity .6s}
+/* cover: the Istanbul video opens full screen, then glides right into its frame and the title comes in */
+@property --mk{syntax:'<percentage>';inherits:false;initial-value:0%}
+.slide.s1{--d:3.3s}
+.s1 #coverVideo{width:1280px;object-position:58% 50%;--mk:0%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--mk));mask-image:linear-gradient(90deg,transparent,#000 var(--mk));transition:none}
+.s1.on #coverVideo{width:940px;--mk:34%;transition:width 1.7s cubic-bezier(.65,0,.35,1) 2s,--mk 1.7s cubic-bezier(.65,0,.35,1) 2s}
+/* slide 7 -> 8: the clip starts in the socket's frame on the right, then opens to full screen */
+#tv{--mk:0%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--mk));mask-image:linear-gradient(90deg,transparent,#000 var(--mk))}
+/* last slide: the still last frame of the clip before it, full screen, then it glides right like the cover */
+.slide.s13{--d:2.5s}
+.s13 .endimg{right:0;top:0;width:1280px;height:720px;object-fit:cover;object-position:50% 50%;--mk:0%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--mk));mask-image:linear-gradient(90deg,transparent,#000 var(--mk));transition:none}
+.s13.on .endimg{width:940px;--mk:34%;transition:width 1.7s cubic-bezier(.65,0,.35,1) .9s,--mk 1.7s cubic-bezier(.65,0,.35,1) .9s}
+/* before Start: the cover video's first frame, still and full screen, nothing else (Start is on the phone; Space or → also start) */
+#startOv{position:absolute;inset:0;z-index:15;background:#000 url(img/f_cover_first.jpg) center/cover no-repeat;transition:opacity .45s ease}
+#startOv[hidden]{display:none}#startOv.go{opacity:0;pointer-events:none}
+#tv.fromR{left:660px;width:620px;--mk:30%}
+#tv.grow{transition:opacity .6s,left 1.5s cubic-bezier(.65,0,.35,1),width 1.5s cubic-bezier(.65,0,.35,1),--mk 1.5s cubic-bezier(.65,0,.35,1)}
 </style></head><body>
 <main id="stage"><div id="deck">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol><symbol id="i-building" viewBox="0 0 24 24"><path d="M5 21V4h9v17"/><path d="M14 9h5v12"/><path d="M8 8h3M8 12h3M8 16h3"/><path d="M3 21h18"/></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3 3 15 0 18"/><path d="M12 3c-3 3-3 15 0 18"/></symbol><symbol id="i-switch" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="2"/></symbol><symbol id="i-breaker" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M12 8v5M9 17h6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol><symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol><symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16a5 5 0 0 1 6 0"/><path d="M12 19.5h.01"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/><path d="M7.5 8h.01"/></symbol><symbol id="i-trendup" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol><symbol id="i-trenddown" viewBox="0 0 24 24"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></symbol><symbol id="i-stairs" viewBox="0 0 24 24"><path d="M3 21h5v-5h5v-5h5V6h3"/></symbol><symbol id="i-hardhat" viewBox="0 0 24 24"><path d="M4 17v-1a8 8 0 0 1 16 0v1"/><path d="M2 17h20"/><path d="M12 8v4"/></symbol><symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M9 13l2 2 4-4"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L5 14h6l-1 8 8-12h-6l1-8z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol><symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></symbol><symbol id="i-truck" viewBox="0 0 24 24"><rect x="2" y="6" width="11" height="10"/><path d="M13 9h4l4 4v3h-8"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 14l2 2 4-4"/></symbol><symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 10v4h4l8 4V6L7 10H3z"/><path d="M18 9a4 4 0 0 1 0 6"/></symbol><symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></symbol><symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 3L3 11l7 3 3 7 8-18z"/><path d="M10 14l11-11"/></symbol><symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol><symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9l4-6z"/><path d="M2 9h20"/><path d="M9 9l3 12 3-12"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="6.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2a3 3 0 0 0-2.5-1.2c-1.7 0-2.7.9-2.7 2s.8 1.6 2.7 2c1.9.4 2.7.9 2.7 2s-1 2-2.7 2a3 3 0 0 1-2.5-1.2"/><path d="M12 6v2M12 16v2"/></symbol><symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol><symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></symbol></svg>
 <!-- 01 cover -->
-<section class="slide" data-tv="t1" aria-label="One kit. One safe flat.">
-  <video class="abs cover-img slidevid" id="coverVideo" src="media/f_cover.mp4" poster="img/f_cover.jpg" muted playsinline autoplay preload="auto" style="width:860px;object-position:45% 50%"></video>
+<section class="slide s1" data-tv="t1" aria-label="One kit. One safe flat.">
+  <video class="abs cover-img slidevid" id="coverVideo" src="media/f_cover.mp4" poster="img/f_cover.jpg" muted playsinline autoplay preload="auto"></video>
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
@@ -242,7 +262,7 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 04 competition -->
-<section class="slide airy" aria-label="Every line has a leader. The safe flat has none.">
+<section class="slide airy" data-tv="t3" data-tvend aria-label="Every line has a leader. The safe flat has none.">
   <img class="abs bgp" src="img/f_shop_shelf.jpg" alt="" style="object-position:center"><div class="abs bgs"></div>
   <p class="abs b kick" style="left:90px;top:56px">The competition</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Every line has a leader.<br><span class="grad">The safe flat has none.</span></h2>
@@ -252,7 +272,7 @@ body.ui #bar{opacity:1}
     <div class="glass comp b" style="--i:3"><span class="ib sm"><img class="ic3d" src="img/icons/bulb.webp" alt=""></span><p class="ln">Lighting</p><p class="ld">China<br>half of imports</p><p class="fct">Chinese goods: 96% of LED lamp imports (older data).</p><p class="st no">A price fight</p></div>
     <div class="glass comp b" style="--i:4"><span class="ib sm"><img class="ic3d" src="img/icons/drop.webp" alt=""></span><p class="ln">Pipes</p><p class="ld">Fırat<br>Kalde</p><p class="fct">A 20 mm pipe elbow: Kalde 135 lira, Fırat 170.</p><p class="st no">Local favourites</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:7;border-color:rgba(99,230,255,.5)"><i></i>One safety kit for one flat? <b class="grad" style="margin-left:6px">Nobody sells it.</b></div>
+  <div class="abs glass b pill" style="left:0;right:0;margin:0 auto;width:max-content;top:566px;color:var(--fg);--i:7;border-color:rgba(99,230,255,.5)"><i></i>One safety kit for one flat? <b class="grad" style="margin-left:6px">Nobody sells it.</b></div>
   <p class="src">Sources: brand websites; import data (lighting, older data); Trendyol and dealer lists (2026)</p>
 </section>
 
@@ -262,15 +282,15 @@ body.ui #bar{opacity:1}
   <p class="abs b kick" style="left:90px;top:56px">Strategy · three ideas from the course</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Don't fight the leaders.<br><span class="grad">Start where they aren't.</span></h2>
   <div class="abs grid3" style="left:90px;top:232px;width:1100px">
-    <div class="glass th b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/target.webp" alt=""></span><div class="no">01 · LECTURE 2</div><div class="big">Niche<br>first mover</div><div class="sm">Lead a small market first.</div><p class="fct">Honyar's niche: the normal flat under 21.5 m, where the law asks for little.</p></div>
+    <div class="glass th b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/target.webp" alt=""></span><div class="no">01 · LECTURE 2</div><div class="big">Niche<br>first mover</div><div class="sm">Lead a small market first.</div><p class="fct">Honyar's niche: normal flats in buildings under 21.5 m.</p></div>
     <div class="glass th b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/tag.webp" alt=""></span><div class="no">02 · HBR</div><div class="big">Good enough<br>for emerging markets</div><div class="sm">Low price. Easy to buy.</div><p class="fct">About 2,500–5,000 lira for a flat set (my estimate), below the 6,000-lira building units.</p></div>
     <div class="glass th b" style="--i:4"><span class="ib"><img class="ic3d" src="img/icons/stairs.webp" alt=""></span><div class="no" style="color:var(--amber)">03 · NINTENDO CASE</div><div class="big">Disruptive<br>entry</div><div class="sm">Start at the bottom. Move up.</div><p class="fct">Nintendo's Wii won with a simpler, cheaper product. Honyar does the same for normal flats.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i>A follower in switches. <b style="margin-left:6px" class="grad">A leader in this niche.</b></div>
+  <div class="abs glass b pill" style="left:0;right:0;margin:0 auto;width:max-content;top:566px;color:var(--fg);--i:6"><i></i>A follower in switches. <b style="margin-left:6px" class="grad">A leader in this niche.</b></div>
 </section>
 
 <!-- 07 who buys -->
-<section class="slide airy" data-tv="t5" aria-label="Who buys it. Who picks it.">
+<section class="slide airy" data-tv="t5" data-tvend aria-label="Who buys it. Who picks it.">
   <img class="abs bgp" src="img/f_site_meeting.jpg" alt="" style="object-position:center"><div class="abs bgs hv"></div>
   <p class="abs b kick" style="left:90px;top:56px">Target customers</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Who buys it.<br><span class="grad">Who picks it.</span></h2>
@@ -302,7 +322,7 @@ body.ui #bar{opacity:1}
   <div class="abs grid3" style="left:90px;top:456px;width:1100px;gap:22px">
     <div class="glass chip b" style="--i:4"><span class="ib"><img class="ic3d" src="img/icons/tag.webp" alt=""></span><div class="v grad cu">15% less</div><div class="t">The whole kit vs. parts</div><p class="fct">Smart smoke alarm, leak sensor and hub cost over 6,000 lira apart.</p></div>
     <div class="glass chip b" style="--i:5"><span class="ib"><img class="ic3d" src="img/icons/layers.webp" alt=""></span><div class="v">2×</div><div class="t">Factory price to shelf price</div><p class="fct">Dealers get 40–60% off list. Shelf price is 1.6 to 2.0 times Honyar's net price.</p></div>
-    <div class="glass chip b" style="--i:6"><span class="ib"><img class="ic3d" src="img/icons/trendup.webp" alt=""></span><div class="v cu" style="color:var(--amber)">+30% a year</div><div class="t">So Honyar prices in euros</div><p class="fct">Inflation forecast for end-2026: 28%.</p></div>
+    <div class="glass chip b" style="--i:6"><span class="ib"><img class="ic3d" src="img/icons/trendup.webp" alt=""></span><div class="v cu" style="color:var(--amber)">+30% a year</div><div class="t">So Honyar prices in US dollars</div><p class="fct">Inflation forecast for end-2026: 28%.</p></div>
   </div>
   <p class="src">Honyar's price is my plan. Viko and Schneider: lowest shop prices for a 4-pole 40 A 30 mA breaker, 2026 (Akakçe).</p>
 </section>
@@ -316,7 +336,7 @@ body.ui #bar{opacity:1}
     <span>Honyar</span><i>→</i><span>Distributor</span><i>→</i><span>Wholesaler</span><i>→</i><span>Shop</span><i>→</i><span class="hl">Electrician</span><i>→</i><span>Family</span>
   </div>
   <div class="abs grid2" style="left:90px;top:262px;width:700px;gap:20px">
-    <div class="glass q2 b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/clock.webp" alt=""></span><p class="k">Pay only after it sells?</p><div class="v grad">2 to 3 months</div><p class="t">Not usually. Shops buy on credit. Honyar should give free trial stock to a few dealers.</p><p class="fct">Makers give 60 to 120 days, secured by cheques, bank guarantees or credit insurance.</p></div>
+    <div class="glass q2 b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/box.webp" alt=""></span><p class="k">Pay only after it sells?</p><div class="v grad">5–10 free kits</div><p class="t">Shops want to test a new brand first. Honyar gives each new seller 5 to 10 free sample kits.</p><p class="fct">After the test, shops order at the normal dealer price.</p></div>
     <div class="glass q2 b" style="--i:4"><span class="ib"><img class="ic3d" src="img/icons/percent.webp" alt=""></span><p class="k">How much do they add?</p><div class="v grad">20% and 30%</div><p class="t">Wholesalers about 20%. Shops about 30%. One clear price for every dealer.</p><p class="fct">Market range: wholesaler 15–30%, shop 25–40%. A Trendyol sale costs 15–20% commission.</p></div>
   </div>
   <p class="abs b cap" style="left:90px;top:656px;--i:6">There are few public numbers. Honyar should check them with dealers in Istanbul.</p>
@@ -351,9 +371,9 @@ body.ui #bar{opacity:1}
   <div class="abs grid3" style="left:90px;top:232px;width:1100px">
     <div class="glass step b" style="--i:1"><span class="ib"><img class="ic3d" src="img/icons/megaphone.webp" alt=""></span><p class="when">Months 0–3</p><p class="what">Launch</p><p class="det">A stand at Istanbul's big electrical fair. A showroom.</p><p class="fct">Free display boards and trial stock at a few anchor dealers.</p></div>
     <div class="glass step b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/play.webp" alt=""></span><p class="when">Months 3–6</p><p class="what">Prove</p><p class="det">Short videos of fire and leak tests, shared by electricians.</p><p class="fct">Tests copy real cases: socket fires like Birecik, leaks like Hatay.</p></div>
-    <div class="glass step hi b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/trendup.webp" alt=""></span><p class="when">Months 6–12</p><p class="what">Grow</p><p class="det">An earthquake drill day with schools. The kit in 2 hotels.</p><p class="fct">Timed near 6 February, the earthquake anniversary.</p></div>
+    <div class="glass step hi b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/trendup.webp" alt=""></span><p class="when">Months 6–12</p><p class="what">Grow</p><p class="det">Social media: Instagram and TikTok videos by electricians and families. The kit in 2 hotels.</p><p class="fct">Short safety tips, with the whole kit in every post.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i>Every message shows the whole kit. <b class="grad" style="margin-left:6px">So all four lines grow together.</b></div>
+  <div class="abs glass b pill" style="left:0;right:0;margin:0 auto;width:max-content;top:566px;color:var(--fg);--i:6"><i></i>Every message shows the whole kit. <b class="grad" style="margin-left:6px">So all four lines grow together.</b></div>
 </section>
 
 <!-- 12 business model -->
@@ -367,7 +387,7 @@ body.ui #bar{opacity:1}
     <div class="glass bm b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/gear.webp" alt=""></span><p class="k">Processes</p><p class="t">Train electricians. Sell to builders. Build locally.</p><p class="fct">A reward at least equal to Schneider's 4%. A master distributor with project staff.</p></div>
     <div class="glass bm b" style="--i:4"><span class="ib"><img class="ic3d" src="img/icons/coin.webp" alt=""></span><p class="k">Earnings</p><p class="t">A price per flat, plus shop sales</p><p class="fct">Each 30 days of credit costs about 3% of the invoice.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i></i><b class="grad" style="margin-right:6px">Open innovation:</b> Xiaomi's app, a Turkish factory, Turkish dealers.</div>
+  <div class="abs glass b pill" style="left:0;right:0;margin:0 auto;width:max-content;top:566px;color:var(--fg);--i:6"><i></i><b class="grad" style="margin-right:6px">Open innovation:</b> Xiaomi's app, a Turkish factory, Turkish dealers.</div>
   <p class="src">Course: Lecture 2 (four parts of a business model; open innovation)</p>
 </section>
 
@@ -381,18 +401,18 @@ body.ui #bar{opacity:1}
     <div class="glass step b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/link.webp" alt=""></span><p class="when">Year 2</p><p class="what">Joint venture</p><p class="det">Make it in Turkey, with more than half local parts.</p><p class="fct">51% local content earns a domestic-goods certificate: up to 15% price edge in public tenders.</p></div>
     <div class="glass step b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/city.webp" alt=""></span><p class="when">Year 3</p><p class="what">Scale</p><p class="det">TOKİ's public homes. Then Europe.</p><p class="fct">TOKİ plans 500,000 social homes. First deliveries: March 2027.</p></div>
   </div>
-  <div class="abs glass b pill" style="left:90px;top:566px;color:var(--fg);--i:6"><i style="background:var(--amber);box-shadow:0 0 14px var(--amber)"></i><b style="margin-right:6px;color:var(--amber)">Like Tesla in Shanghai:</b> build locally, win the government's support.</div>
+  <div class="abs glass b pill" style="left:0;right:0;margin:0 auto;width:max-content;top:566px;color:var(--fg);--i:6"><i style="background:var(--amber);box-shadow:0 0 14px var(--amber)"></i><b style="margin-right:6px;color:var(--amber)">Like Tesla in Shanghai:</b> build locally, win the government's support.</div>
   <p class="src">Sources: Lecture 1 (entry modes); Tesla Gigafactory Shanghai case; Public Procurement Law 4734 Art. 63</p>
 </section>
 
 <!-- 14 risks -->
-<section class="slide slow airy s12" data-tv="t12" aria-label="Risks. And Honyar's answers.">
+<section class="slide slow airy s12" data-tv="t12" data-tvend aria-label="Risks. And Honyar's answers.">
   <video class="abs bgp vid slidevid" data-rate="0.6" src="media/f_city_blue.mp4" poster="img/f_city_blue_first.jpg" muted playsinline preload="auto" style="object-position:center"></video><div class="abs bgs low"></div>
   <p class="abs b kick" style="left:90px;top:56px">Risks</p>
   <h2 class="abs b" style="left:90px;top:84px;font-size:52px;--i:0">Risks. <span class="grad">And Honyar's answers.</span></h2>
   <div class="abs b callout" style="left:880px;top:150px;--i:1"><span class="cl-line"></span><p class="cl-n">56<small> in 100</small></p><p class="cl-t">homes have the compulsory<br>earthquake insurance.</p></div>
   <div class="abs risks" style="left:90px;top:392px;width:1100px">
-    <div class="glass rk b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/trenddown.webp" alt=""></span><p class="r">The lira moves fast</p><p class="a">Price in euros. Revise the list every quarter.</p></div>
+    <div class="glass rk b" style="--i:2"><span class="ib"><img class="ic3d" src="img/icons/trenddown.webp" alt=""></span><p class="r">The lira moves fast</p><p class="a">Price in US dollars. Revise the list every quarter.</p></div>
     <div class="glass rk b" style="--i:3"><span class="ib"><img class="ic3d" src="img/icons/copy.webp" alt=""></span><p class="r">Viko copies Honyar</p><p class="a">Its owner Panasonic already sells a seismic breaker abroad. Move first.</p></div>
     <div class="glass rk b" style="--i:4"><span class="ib"><img class="ic3d" src="img/icons/file.webp" alt=""></span><p class="r">Papers take time</p><p class="a">CE, TSE and TS 12884 files. Start now.</p></div>
     <div class="glass rk b" style="--i:5"><span class="ib"><img class="ic3d" src="img/icons/award.webp" alt=""></span><p class="r">Electricians like old brands</p><p class="a">Match Schneider's 4% points. Add training and a 5-year warranty.</p></div>
@@ -403,27 +423,29 @@ body.ui #bar{opacity:1}
 </section>
 
 <!-- 15 closing -->
-<section class="slide" aria-label="Let's build them safer, together">
-  <video class="abs cover-img slidevid" src="media/v_closing.mp4" poster="img/f_closing_real.jpg" muted playsinline preload="auto" style="width:860px;object-position:50% 52%"></video>
+<section class="slide s13" aria-label="Let's build them safer, together">
+  <img class="abs endimg" src="img/f_t12_end.jpg" alt="">
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
-  <p class="abs b sub" style="left:72px;top:170px;width:560px;font-size:24px;font-weight:500;line-height:1.3;--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
-  <h2 class="abs b" style="left:72px;top:262px;width:640px;font-size:70px;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
-  <p class="abs b cap" style="left:72px;top:540px;--i:4">Thank you. &nbsp;<b>Questions?</b></p>
+  <p class="abs b sub" style="left:72px;top:196px;width:560px;font-size:24px;font-weight:500;line-height:1.35;--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
+  <h2 class="abs b" style="left:72px;top:296px;width:640px;font-size:70px;line-height:1.02;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
+  <div class="abs b credit" style="left:72px;top:552px;--i:4"><p class="c1">Thank you. Questions?</p><p class="c2">Can Pamukcu &nbsp;·&nbsp; Honyar in Turkey</p></div>
 </section>
 
 </div></main>
+<div id="startOv" hidden></div>
 <div id="notes" hidden><span class="lbl">Speaker notes</span><span id="notesText"></span></div>
 <div id="bar"><button id="prevB" aria-label="Previous">←</button><span class="ct" id="ct"></span><button id="nextB" aria-label="Next">→</button><button id="notesB">Notes</button><button id="fsB">Full screen</button></div>
 <script>
-const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last time: the problems in Turkish homes.\n• Today: the marketing plan, how Honyar sells all four lines in Turkey.\n(CLICK · video) → But first: after my mid-term, the professor asked me three questions.", "(Slide 2 · 45 s · 1:05)\n• Here's what I found.\n• New homes after the quake: problem solved? Only partly. Istanbul still waits for its quake, about 1.5 million old homes not renewed.\n• French brands with earthquake-safe products? No. Schneider and Legrand sell normal breakers and alarms, nothing for an earthquake inside the flat.\n• Big new buildings? The law already covers the towers. Normal flats get almost nothing. That's the gap.\n(CLICK · video) → So who already sells in this market?", "(Slide 3 · 25 s · 1:30)\n• Every product line already has a strong leader.\n• Switches: too competitive.\n• Breakers: Schneider and ABB are very strong.\n• Lighting: a price fight with China.\n• Pipes: local brands like Fırat and Kalde.\n• Honyar can't win line by line. But nobody sells one safety kit for one flat. That's Honyar's place.", "(Slide 4 · 45 s · 2:15)\n• How can Honyar win? Three ideas from the course.\n• Niche first mover: don't fight the leaders in switches. Lead the normal flat, where the law asks for little.\n• Good enough for emerging markets: one simple kit, at a price families can pay.\n• Disruptive entry, like Nintendo's Wii: simpler and cheaper. Normal flats first, then bigger buildings.\n• Follower in switches, leader in this niche.\n(CLICK · video) → And inside these new buildings, who actually picks the brand?", "(Slide 5 · 20 s · 2:35)\n• Four people decide.\n• Developer sets the rules.\n• Builder picks the brand, mostly on price.\n• Engineer approves it, electrician fits it.\n• Honyar sells to builders first, then electricians, then hotels.\n• Mid-term I put TOKİ first. But the builder picks the brand, so TOKİ comes later.\n(CLICK · video) → And what does the builder pay?", "(Slide 6 · 30 s · 3:05)\n• Cheaper than Schneider, safer than Viko.\n• Same breaker in the shop: Viko about 1,060 lira, Schneider about 1,350. Honyar about 1,100.\n• The full kit is 15% cheaper than the parts one by one.\n• Prices in Turkey go up about 30% a year, so Honyar prices in euros.\n• Honyar's price is my plan. The others are real shop prices.", "(Slide 7 · 30 s · 3:35)\n• Honyar asked me two questions about shops.\n• Do shops pay only after they sell? Not usually. They buy on credit, pay in 2–3 months.\n• Honyar is new, so free trial stock for a few dealers.\n• How much do they add? Wholesalers about 20%, shops about 30%.\n• Few public numbers, so Honyar checks them with dealers in Istanbul.\n(CLICK · video) → But first, shops and families must trust a new brand.", "(Slide 8 · 20 s · 3:55)\n• One promise: the safe home inside.\n• Families need trust: a five-year warranty.\n• Distributors need it easy to sell: free trial stock.\n• Builders need proof: three test projects.\n• Engineers need papers: CE and TSE files.\n• First-year target: 50 dealers and 5,000 flats.", "(Slide 9 · 40 s · 4:35)\n• How do people hear about it? One campaign for all four lines.\n• First 3 months, launch: a stand at Istanbul's big electrical fair.\n• Next 3 months, prove it: short fire and leak test videos, shared by electricians.\n• Then grow: an earthquake drill day with schools, near the 6 February anniversary.\n• Every message shows the whole kit, so all four lines grow together.\n(CLICK · video) → And what does Honyar really sell? Not parts. A safe flat.", "(Slide 10 · 20 s · 4:55)\n• From class: a business model has four parts.\n• Value: a safe flat, at one price.\n• Resources: four product lines, forty years, and Xiaomi's app.\n• Processes: train electricians, sell to builders, build locally.\n• Earnings: a price per flat, plus shop sales.\n• Partners fill what Honyar doesn't have. That's open innovation.\n(CLICK · video) → So where is the kit made?", "(Slide 11 · 30 s · 5:25)\n• How does Honyar enter? Partner first, then build.\n• Year 1: export, sell with a Turkish partner. Mid-term I said import tax was high. Checked again: switches pay almost none.\n• Year 2: joint venture with a Turkish factory, more than half local parts. An edge in public tenders.\n• Year 3: TOKİ's public homes, then Europe.\n• Like Tesla in Shanghai: build locally, win the government's support.\n(CLICK · video) → But Istanbul is not an easy market.", "(Slide 12 · 40 s · 6:05)\n• Of course, there are risks.\n• The lira moves fast, so Honyar prices in euros.\n• Viko could copy Honyar, so Honyar moves first.\n• Electricians like old brands, so training and a good reward.\n• Families don't buy safety on their own. Earthquake insurance covers only about half of homes. So safety comes inside the price of the home.\n(CLICK · video) → Because in the end, it's about one family, in one home.", "(Slide 13 · 10 s · 6:15)\n• Turkey made the walls strong. Honyar can make the home safe.\n• Let's build them safer, together.\n• Thank you. I'm happy to take your questions."];
+const NOTES = ["Slide 1 · 20 s · clock 0:20\n• Hi everyone, I'm Can.\n• Last time, I talked about the problems in Turkish homes.\n• Today, I'll show you the marketing plan: how Honyar can sell all four product lines in Turkey.\n[CLICK · video 6 s]\n• But first: after my mid-term, the professor asked me three questions.", "Slide 2 · 45 s · clock 1:05\n• Here's what I found.\n• First: did the new homes after the quake solve the problem? Only partly. Istanbul is still waiting for its quake, and about 1.5 million old homes are not renewed.\n• Second: do French brands make earthquake-safe home products? No. Schneider and Legrand sell normal breakers and alarms, but they sell nothing for an earthquake inside the flat.\n• Third: do big new buildings need these systems? Yes, but the law already covers the towers. Normal flats get almost nothing. That's the gap.\n[CLICK · video 8 s]\n• So who already sells in this market?\n• Every product line already has a strong leader.", "Slide 3 · 25 s · clock 1:30\n• In switches, the market is too competitive.\n• In breakers, Schneider and ABB are very strong.\n• In lighting, Honyar would be in a price fight with China.\n• In pipes, local brands like Fırat and Kalde lead.\n• So Honyar can't win line by line. But nobody sells one safety kit for one flat. That's Honyar's place.\n[CLICK · video 8 s]\n• So how can Honyar win? I used three ideas from the course.", "Slide 4 · 45 s · clock 2:15\n• First, niche first mover: Honyar doesn't fight the leaders in switches. It leads the normal flat first.\n• Second, good enough for emerging markets: Honyar sells one simple kit, at a price families can pay.\n• Third, disruptive entry, like Nintendo's Wii: Honyar is simpler and cheaper. It starts with normal flats, then moves up to bigger buildings.\n• So Honyar is a follower in switches, but a leader in this niche.\n[CLICK · video 11 s]\n• And inside these new buildings, who actually picks the brand?\n• It's not one person. Four people decide.", "Slide 5 · 20 s · clock 2:35\n• The developer sets the rules.\n• The builder picks the brand, mostly on price.\n• The engineer approves it, and the electrician fits it.\n• So Honyar sells to builders first, then to electricians, then to hotels.\n[CLICK · video 8 s]\n• So what does the builder pay?\n• My idea: Honyar is cheaper than Schneider and safer than Viko.", "Slide 6 · 30 s · clock 3:05\n• The same breaker costs about 1,060 lira from Viko and about 1,350 from Schneider. My idea for Honyar: about 1,100 lira.\n• The full kit is 15% cheaper than buying the parts one by one.\n• Prices in Turkey go up about 30% a year, so Honyar prices in US dollars. Then inflation doesn't affect the price.\n• Honyar's price is my plan. The others are real shop prices.\n• Next, Honyar asked me two questions about shops.", "Slide 7 · 30 s · clock 3:35\n• Do shops pay only after they sell? Shops want to test a new brand first.\n• So Honyar gives each new seller 5 to 10 free sample kits to test.\n• How much do they add? Wholesalers add about 20%, and shops add about 30%.\n• There aren't many public numbers, so Honyar should check them with dealers in Istanbul.\n[CLICK · video 8 s]\n• But shops and families must trust a new brand.\n• So the brand has one promise: the safe home inside.", "Slide 8 · 20 s · clock 3:55\n• Families need trust, so Honyar gives a five-year warranty.\n• Distributors need an easy sale, so Honyar gives free trial stock.\n• Builders need proof, so Honyar runs three test projects.\n• Engineers need papers, so Honyar prepares the CE and TSE files.\n• Honyar's target for the first year is 50 dealers and 5,000 flats.", "Slide 9 · 40 s · clock 4:35\n• How do people hear about it? Honyar runs one campaign for all four lines, with social media at the center.\n• In the first three months, Honyar launches with a stand at Istanbul's big electrical fair.\n• In the next three months, Honyar proves it: electricians share short fire and leak test videos.\n• Then Honyar grows on social media: electricians and families post Instagram and TikTok videos. The kit also goes into two hotels.\n• Every message shows the whole kit, so all four lines grow together.\n[CLICK · video 8 s]\n• So what does Honyar really sell? Not parts. It sells a safe flat.\n• From class, we know a business model has four parts.", "Slide 10 · 20 s · clock 4:55\n• The value is a safe flat, at one price.\n• The resources are four product lines, forty years of experience, and Xiaomi's app.\n• The processes are simple: Honyar trains electricians, sells to builders, and builds locally.\n• Honyar earns a price per flat, plus shop sales.\n• Partners fill what Honyar doesn't have. That's open innovation.\n[CLICK · video 8 s]\n• So where is the kit made?\n• And how does Honyar enter Turkey? It partners first, then builds.", "Slide 11 · 30 s · clock 5:25\n• In year one, Honyar exports and sells with a Turkish partner. Switches pay almost no import tax, so exporting works.\n• In year two, Honyar starts a joint venture with a Turkish factory and uses more than half local parts. This gives it an edge in public tenders.\n• In year three, Honyar supplies TOKİ's public homes, and then goes to Europe.\n• It's like Tesla in Shanghai: Tesla built locally and won the government's support.\n[CLICK · video 8 s]\n• But Istanbul is not an easy market.\n• Of course, there are risks.", "Slide 12 · 40 s · clock 6:05\n• The lira moves fast, so Honyar prices in US dollars.\n• Viko could copy Honyar, so Honyar has to move first.\n• Electricians like old brands, so Honyar gives them training and a good reward.\n• Families don't buy safety on their own. Earthquake insurance covers only about half of homes. So Honyar puts safety inside the price of the home.\n[CLICK · video 8 s]\n• Because in the end, it's about one family, in one home.", "Slide 13 · 10 s · clock 6:15\n• Turkey made the walls strong. Honyar can make the home safe.\n• Let's build them safer, together.\n• Thank you. I'm happy to take your questions."];
 (function(){
   var st=document.getElementById('stage'),S=[].slice.call(document.querySelectorAll('.slide')),N=S.length,cur=0,busy=false;
   function fit(){var s=Math.min(innerWidth/1280,innerHeight/720);st.style.transform='translate(-50%,-50%) scale('+s+')'}
   addEventListener('resize',fit);fit();
   function show(n){
     cur=Math.max(0,Math.min(N-1,n));
+    S.forEach(function(e,i){if(i!==cur)e.classList.remove('viaTv')});
     S.forEach(function(e){e.classList.remove('leaving')});
     S.forEach(function(e,i){e.classList.toggle('on',i===cur)});
     document.getElementById('ct').textContent=(cur+1)+' / '+N;
@@ -433,13 +455,14 @@ const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last t
   }
   // Video transition: if media/tv/<name>.mp4 exists, play it between the two slides; if not, a soft fade.
   // a click while a clip plays skips it: the next slide comes at once (its picture is the clip's last frame), so you never wait
-  var skip=null,kill=null;
+  var skip=null,kill=null,tvOn=false;   // tvOn: a clip is playing and the next slide is not up yet (the phone shows 'Video playing')
   function next(){
+    if(!started){start();return}
     if(busy){if(skip)skip();return}
     if(cur>=N-1)return;
     var name=S[cur].getAttribute('data-tv');
     if(!name){show(cur+1);return}
-    busy=true;
+    busy=true;tvOn=true;
     // like the AI Bridge deck: the text leaves first, then the clip plays over the slide's own picture
     var from=S[cur];from.classList.add('leaving');
     // use the clip buffered at start-up (it plays at once); a fresh one only if that one failed
@@ -447,17 +470,20 @@ const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last t
     if(!v||v.error||v.parentNode){v=document.createElement('video');v.muted=true;v.playsInline=true;v.src='media/tv2/'+name+'.mp4'}
     else{v.style.transition='';v.style.opacity='';try{v.currentTime=0}catch(x){}}
     v.id='tv';
+    // slide 7: start the clip where the socket is (right side), then open it up
+    v.classList.remove('grow');v.classList.toggle('fromR',from.classList.contains('s7'));
     var done=false,t0=Date.now();
-    kill=function(){done=true;skip=null;kill=null;v.pause();v.remove();busy=false};
+    kill=function(){tvOn=false;done=true;skip=null;kill=null;v.pause();v.remove();busy=false};
     // the next slide is already up (clip only fading out): this click is a normal Next, not a skip
     skip=function(){if(adv&&!done){done=true;skip=null;kill=null;v.pause();v.remove();busy=false;next();return}if(done||Date.now()-t0<700)return;done=true;skip=null;kill=null;advance();v.style.transition='opacity .6s ease';v.style.opacity=0;setTimeout(function(){v.pause();v.remove();busy=false},650)};
     // the next slide starts under the last 1.3 s of the clip, and the clip fades out at once, so its words come in while the clip still moves
-    var adv=false;function advance(){if(!adv){adv=true;show(cur+1);v.style.transition='opacity 1.1s ease';v.style.opacity=0}}
+    var adv=false;function advance(){if(!adv){adv=true;tvOn=false;S[cur+1].classList.add('viaTv');show(cur+1);v.style.transition='opacity 1.1s ease';v.style.opacity=0}}
     function finish(){if(done)return;done=true;skip=null;kill=null;advance();v.style.opacity=0;busy=false;setTimeout(function(){v.remove()},700)}
-    function fade(){if(!done){done=true;skip=null;kill=null;v.pause();v.remove();busy=false;show(cur+1)}}
-    v.ontimeupdate=function(){if(!done&&v.duration&&v.duration-v.currentTime<1.3)advance()};
+    function fade(){tvOn=false;if(!done){done=true;skip=null;kill=null;v.pause();v.remove();busy=false;show(cur+1)}}
+    var lead=from.hasAttribute('data-tvend')?0:1.3;   // data-tvend: the next slide starts on the clip's last frame, so wait for it
+    v.ontimeupdate=function(){if(!done&&lead&&v.duration&&v.duration-v.currentTime<lead)advance()};
     v.onerror=fade;
-    v.onplaying=function(){if(!done)v.style.opacity=1};
+    v.onplaying=function(){if(done)return;v.style.opacity=1;if(v.classList.contains('fromR'))setTimeout(function(){if(!done){v.classList.add('grow');v.classList.remove('fromR')}},500)};
     v.onended=finish;
     if(v.readyState>=3)v.play().catch(finish);else v.oncanplay=function(){v.oncanplay=null;if(!done)v.play().catch(finish)};
     setTimeout(function(){if(!done&&v.readyState<3)fade()},2500);
@@ -466,9 +492,12 @@ const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last t
     setTimeout(function(){if(!done)st.appendChild(v)},450);
   }
   // Back, Home, End, a jump from the phone: stop a playing clip first (also one that has not shown yet)
-  function stopTv(){if(kill)kill();var t=document.getElementById('tv');if(t){t.pause();t.remove()}busy=false;skip=null}
-  function prev(){stopTv();show(cur-1)}
-  window.DECK={show:function(n){if(n===cur+1)return next();stopTv();show(n)},next:next,prev:prev,N:N,get cur(){return cur}};
+  function stopTv(){tvOn=false;if(kill)kill();var t=document.getElementById('tv');if(t){t.pause();t.remove()}busy=false;skip=null}
+  function prev(){if(!started)return;stopTv();show(cur-1)}
+  // Start screen: nothing plays until Start (button, Space, →, a click, or the phone); then slide 1 begins from the first frame
+  var started=true;
+  function start(){if(started)return;started=true;var o=document.getElementById('startOv');o.classList.add('go');setTimeout(function(){o.hidden=true},850);show(0)}
+  window.DECK={show:function(n){if(!started){start();if(n>0)show(n);return}if(n===cur+1)return next();stopTv();show(n)},start:start,get started(){return started},next:next,prev:prev,N:N,get cur(){return cur},get tv(){return tvOn}};
   var notes=document.getElementById('notes');
   function tn(){notes.hidden=!notes.hidden;document.getElementById('notesB').classList.toggle('on',!notes.hidden)}
   function fs(){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}
@@ -485,7 +514,7 @@ const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last t
     else if(k==='f'||k==='F')fs();
     else if(k==='Home'){stopTv();show(0)}else if(k==='End'){stopTv();show(N-1)}
   });
-  addEventListener('click',function(e){if(e.target.closest('#notes,#phoneOv'))return;e.clientX>innerWidth/2?next():prev()});
+  addEventListener('click',function(e){if(e.target.closest('#notes,#phoneOv'))return;if(!started){start();return}e.clientX>innerWidth/2?next():prev()});
   var t;addEventListener('mousemove',function(){document.body.classList.add('ui');clearTimeout(t);t=setTimeout(function(){document.body.classList.remove('ui')},2500)});
   addEventListener('hashchange',function(){stopTv();show((parseInt(location.hash.slice(2))||1)-1)});
   // warm up: decode every picture and buffer the transition clip before the first click
@@ -522,8 +551,21 @@ const NOTES = ["(Slide 1 · 20 s · 0:20)\n• Hi everyone, I'm Can.\n• Last t
     setTimeout(function(){requestAnimationFrame(function f(ts){t0=t0||ts;var k=Math.min(1,(ts-t0)/1200),e=1-Math.pow(1-k,3);
       el.textContent=t.replace(m[0],Math.round(goal*e).toLocaleString('en-US'));if(k<1)requestAnimationFrame(f)})},350+i*130);
   })});
+  // cards side by side: the same part (label, number, text, fact line) starts at the same height in every card of the row
+  function evenCards(){
+    var rows=new Set();document.querySelectorAll('.slide .glass:not(.pill)').forEach(function(c){var p=c.parentElement;if(p&&p.querySelectorAll(':scope>.glass').length>1)rows.add(p)});
+    rows.forEach(function(row){var cards=[].slice.call(row.querySelectorAll(':scope>.glass')),groups={};
+      cards.forEach(function(c){var seen={};[].forEach.call(c.children,function(el){if(el.classList.contains('ib')||getComputedStyle(el).position==='absolute')return;
+        var key=el.tagName+'.'+el.className;seen[key]=(seen[key]||0)+1;key+='#'+seen[key];el.style.minHeight='';(groups[key]=groups[key]||[]).push(el)})});
+      Object.keys(groups).forEach(function(k){var g=groups[k];if(g.length<2)return;var h=Math.max.apply(null,g.map(function(el){return el.offsetHeight}));
+        g.forEach(function(el){el.style.minHeight=Math.ceil(h)+'px'})})})}
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(evenCards);addEventListener('load',evenCards);evenCards();
   if(/[?&]bare/.test(location.search))document.body.classList.add('bare');
-  show((parseInt(location.hash.slice(2))||1)-1);
+  var first=(parseInt(location.hash.slice(2))||1)-1;
+  if(first===0&&!/[?&](bare|nostart)/.test(location.search)){started=false;var so=document.getElementById('startOv');st.appendChild(so);so.hidden=false;   // inside the stage, so the frame sits exactly where the video will play
+    document.getElementById('ct').textContent='1 / '+N;
+    var cv=document.getElementById('coverVideo');if(cv){cv.removeAttribute('autoplay');cv.pause()}}
+  else show(first);
 })();
 </script>
 <script src="vendor/mqtt.min.js"></script><script src="vendor/ntfy-link.js"></script><script src="vendor/qrcode.js"></script>

@@ -19,7 +19,7 @@
   var clients = [], seen = {}, lastPhone = 0;
 
   function publishState() {
-    var msg = JSON.stringify({ n: DECK.cur, N: DECK.N, t: Date.now() });
+    var msg = JSON.stringify({ n: DECK.cur, N: DECK.N, tv: !!DECK.tv, started: DECK.started !== false, t: Date.now() });
     clients.forEach(function (c) { if (c.connected) c.publish(BASE + 'state', msg, { qos: 0, retain: true }); });
   }
   function onCmd(m) {
@@ -27,7 +27,8 @@
     seen[m.id] = 1;
     var first = Date.now() - lastPhone > 60000;
     lastPhone = Date.now();
-    if (m.a === 'next') DECK.next();
+    if (m.a === 'start') { if (DECK.start) DECK.start(); }
+    else if (m.a === 'next') DECK.next();
     else if (m.a === 'prev') DECK.prev();
     else if (m.a === 'go' && typeof m.n === 'number') DECK.show(m.n);
     else publishState();
@@ -47,6 +48,9 @@
   // Fourth route on the normal HTTPS port (vendor/ntfy-link.js), for networks that block the MQTT ports.
   if (window.ntfyConnect && !window.HONYAR_LOCAL) { try { wire(ntfyConnect()); } catch (e) {} }
   window.addEventListener('slidechange', publishState);
+  // tell the phone when a video starts and ends, so it shows 'Video playing' and keeps this slide's notes
+  var lastTv = false;
+  setInterval(function () { var t = !!DECK.tv; if (t !== lastTv) { lastTv = t; publishState(); } }, 200);
   setInterval(publishState, 15000);
   setInterval(setStatus, 5000);
 
