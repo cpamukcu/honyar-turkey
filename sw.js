@@ -1,9 +1,9 @@
 // Offline memory for the presentation (service worker). deploy.py fills in VERSION.
 // - Pages (slides, phone remote, practice): try the network first (4 s), else the saved copy.
 // - Pictures, videos, scripts, fonts: the saved copy first, else the network (then saved).
-// - Video range requests are left to the browser (the slides load videos into memory themselves).
+// - Video range requests: answered from the saved copy when there is one (so clips play on bad wifi), else the network.
 // A new VERSION (every publish) clears the old saved copies, so updates always arrive.
-const VERSION = 'hny-final2-54b571f3';
+const VERSION = 'hny-final3-11012034';
 const CORE = ['./', 'index.html', 'remote.html', 'remote2.html', 'practice.html', 'remote-host.js', 'remote-host2.js', 'remote-host.css',
   'vendor/mqtt.min.js', 'vendor/ntfy-link.js', 'vendor/qrcode.js', 'vendor/inter/inter.css'];
 
@@ -33,7 +33,23 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;            // ntfy, relays, etc.: not touched
-  if (req.headers.has('range')) return;                        // video streaming: browser handles it
+  if (req.headers.has('range')) {                              // video: play from the saved copy if there is one
+    e.respondWith((async () => {
+      const cache = await caches.open(VERSION);
+      const hit = await cache.match(url.origin + url.pathname);
+      if (!hit) return fetch(req);
+      const buf = await hit.arrayBuffer(), total = buf.byteLength;
+      const m = /bytes=(\d*)-(\d*)/.exec(req.headers.get('range')) || [];
+      let start = m[1] ? +m[1] : 0, end = m[2] ? +m[2] : total - 1;
+      if (!m[1] && m[2]) { start = Math.max(0, total - +m[2]); end = total - 1; }
+      end = Math.min(end, total - 1);
+      if (start >= total || start > end) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + total } });
+      return new Response(buf.slice(start, end + 1), { status: 206, headers: {
+        'Content-Type': hit.headers.get('Content-Type') || 'video/mp4', 'Content-Length': String(end - start + 1),
+        'Content-Range': 'bytes ' + start + '-' + end + '/' + total, 'Accept-Ranges': 'bytes' } });
+    })());
+    return;
+  }
   if (isPage(req, url)) {
     e.respondWith((async () => {
       const cache = await caches.open(VERSION);
