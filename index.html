@@ -232,9 +232,8 @@ body.ui #bar{opacity:1}
 /* last slide: the still last frame of the clip before it, full screen */
 .slide.s13{--d:1.5s}
 .s13 .endimg{left:0;top:0;width:1280px;height:720px;object-fit:cover;object-position:50% 50%}
-/* the frame stays still and full screen; a soft shade comes in on the left with the text */
-.s13scrim{left:0;top:0;width:1280px;height:720px;background:linear-gradient(90deg,rgba(4,6,13,.9) 0%,rgba(4,6,13,.72) 34%,rgba(4,6,13,.15) 62%,rgba(4,6,13,0) 80%);opacity:0;transition:opacity .2s}
-.s13.on .s13scrim{opacity:1;transition:opacity 1.4s ease .8s}
+/* the frame stays exactly as the paused video (no shade); the text carries its own soft shadow */
+.s13 .b{text-shadow:0 2px 18px rgba(0,0,0,.75),0 0 2px rgba(0,0,0,.5)}.s13 .grad{text-shadow:none;filter:drop-shadow(0 2px 14px rgba(0,0,0,.7))}
 /* before Start: the cover video's first frame, still and full screen, nothing else (Start is on the phone; Space or → also start) */
 #startOv{position:absolute;inset:0;z-index:15;background:#000 url(img/f_cover_first.jpg) center/cover no-repeat;transition:opacity .45s ease}
 #startOv[hidden]{display:none}#startOv.go{opacity:0;pointer-events:none}
@@ -428,13 +427,13 @@ body.ui #bar{opacity:1}
 
 <!-- 15 closing -->
 <section class="slide s13" aria-label="Let's build them safer, together">
-  <img class="abs endimg" src="img/f_t12_end.jpg" alt=""><div class="abs s13scrim"></div>
+  <img class="abs endimg" src="img/f_t12_end.jpg" alt="">
   <div class="abs" style="left:0;top:0;width:100%;height:170px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)"></div>
   <img class="abs b" src="img/logo.png" alt="Honyar" style="left:72px;top:64px;width:175px;--i:0">
   <img class="abs b" src="img/zju_logo.png" alt="Zhejiang University, School of Management" style="right:64px;top:54px;width:240px;--i:0">
-  <p class="abs b sub" style="left:72px;top:176px;width:560px;font-size:22px;font-weight:500;line-height:1.4;color:var(--mut);--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
-  <h2 class="abs b" style="left:72px;top:264px;width:640px;font-size:64px;line-height:1.04;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
-  <div class="abs b credit" style="left:72px;top:504px;--i:4"><p class="c1">Thank you. Questions?</p><p class="c2">Can Pamukcu &nbsp;·&nbsp; Honyar in Turkey</p></div>
+  <p class="abs b sub" style="left:72px;top:150px;width:560px;font-size:22px;font-weight:500;line-height:1.4;color:rgba(255,255,255,.82);--i:1">Turkey made the walls strong.<br>Honyar can make the home safe.</p>
+  <h2 class="abs b" style="left:72px;top:230px;width:640px;font-size:64px;line-height:1.04;--i:2">Let's build<br>them safer,<br><span class="grad">together.</span></h2>
+  <div class="abs b credit" style="left:72px;top:462px;--i:4"><p class="c1">Thank you. Questions?</p><p class="c2">Can Pamukcu &nbsp;·&nbsp; Honyar in Turkey</p></div>
 </section>
 
 </div></main>
